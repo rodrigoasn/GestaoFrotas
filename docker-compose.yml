@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    image: cfrotas:latest
+    command: python manage.py runserver 0.0.0.0:8001
+    container_name: cfrotas_django_app
+    volumes:
+      - ./gestaoFrotas:/app
+      - ./entrypoint.sh:/app/entrypoint.sh
+    ports:
+      - '8001:8001'
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    container_name: cfrotas_postgres_db
+    restart: always
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - '5443:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+volumes:
+  postgres_data:
