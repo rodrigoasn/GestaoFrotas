@@ -1,13 +1,20 @@
 # ────────────────────────────────────────────────────────────────────
 # IMPORTS
 # ────────────────────────────────────────────────────────────────────
-import os
-from django.core.wsgi import get_wsgi_application
-
+from django.contrib import admin
+from .models import SystemConfiguration
 
 # ────────────────────────────────────────────────────────────────────
-# WSGI
+# SYSTEM CONFIGURATION
 # ────────────────────────────────────────────────────────────────────
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'gestaoFrotas.settings')
+@admin.register(SystemConfiguration)
+class SystemConfigurationAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        # Only allow adding if no instance exists
+        if SystemConfiguration.objects.exists():
+            return False
+        return True
 
-application = get_wsgi_application()
+    def has_delete_permission(self, request, obj=None):
+        # Prevent deletion
+        return False

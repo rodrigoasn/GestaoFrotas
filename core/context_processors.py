@@ -1,13 +1,15 @@
 # ────────────────────────────────────────────────────────────────────
 # IMPORTS
 # ────────────────────────────────────────────────────────────────────
-import os
-from django.core.wsgi import get_wsgi_application
+from django.conf import settings
 
 
 # ────────────────────────────────────────────────────────────────────
-# WSGI
+# SESSION EXPIRY
 # ────────────────────────────────────────────────────────────────────
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'gestaoFrotas.settings')
-
-application = get_wsgi_application()
+def session_expiry(request):
+    if request.user.is_authenticated:
+        return {
+            'session_expiry_age': request.session.get_expiry_age(),
+        }
+    return {}

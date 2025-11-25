@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block title %}
-  Login - Gestão de Frotas
+  {% trans "Login - Gestão de Frotas" %}
 {% endblock title %}
 
 {% block content %}
@@ -168,8 +169,8 @@
     <!-- Left Side: Image/Banner -->
     <div class="login-banner">
       <div class="banner-content">
-        <h2 class="fw-bold">Gestão de Frotas</h2>
-        <p class="mb-0">Eficiência e controle para sua operação logística.</p>
+        <h2 class="fw-bold">{% trans "Gestão de Frotas" %}</h2>
+        <p class="mb-0">{% trans "Eficiência e controle para sua operação logística." %}</p>
       </div>
     </div>
 
@@ -180,8 +181,8 @@
           <i class="bi bi-truck-front-fill"></i>
           <span>FROTAS</span>
         </div>
-        <h4 class="fw-bold text-secondary">Bem-vindo(a)</h4>
-        <p class="text-secondary">Insira suas credenciais para acessar.</p>
+        <h4 class="fw-bold text-secondary">{% trans "Bem-vindo(a)" %}</h4>
+        <p class="text-secondary">{% trans "Insira suas credenciais para acessar." %}</p>
       </div>
 
       <!-- Form -->
@@ -189,11 +190,11 @@
         {% csrf_token %}
         {% if form.errors %}
           <div class="alert alert-danger py-2 small">
-            <i class="bi bi-exclamation-circle me-2"></i>Credenciais inválidas.
+            <i class="bi bi-exclamation-circle me-2"></i>{% trans "Credenciais inválidas." %}
           </div>
         {% endif %}
         <div class="mb-3">
-          <label class="form-label small text-secondary fw-bold">E-MAIL</label>
+          <label class="form-label small text-secondary fw-bold">{% trans "E-MAIL" %}</label>
           <div class="input-group">
             <span class="input-group-text"><i class="bi bi-envelope text-secondary"></i></span>
             <input type="email"
@@ -205,7 +206,7 @@
           </div>
         </div>
         <div class="mb-3">
-          <label class="form-label small text-secondary fw-bold">SENHA</label>
+          <label class="form-label small text-secondary fw-bold">{% trans "SENHA" %}</label>
           <div class="input-group">
             <span class="input-group-text"><i class="bi bi-lock text-secondary"></i></span>
             <input type="password"
@@ -218,17 +219,17 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
           <div class="form-check">
             <input class="form-check-input" type="checkbox" id="rememberMe" />
-            <label class="form-check-label small text-secondary" for="rememberMe">Lembrar-me</label>
+            <label class="form-check-label small text-secondary" for="rememberMe">{% trans "Lembrar-me" %}</label>
           </div>
-          <a href="#" class="small text-decoration-none fw-bold">Esqueceu a senha?</a>
+          <a href="#" class="small text-decoration-none fw-bold">{% trans "Esqueceu a senha?" %}</a>
         </div>
-        <button type="submit" class="btn btn-primary w-100 btn-login">ACESSAR SISTEMA</button>
+        <button type="submit" class="btn btn-primary w-100 btn-login">{% trans "ACESSAR SISTEMA" %}</button>
         <div class="mt-4 text-center">
           <p class="small text-secondary mb-0">
-            @ 2025 Gestão de Frotas.
+            @ 2025 {% trans "Gestão de Frotas" %}.
             <br />
-            <a href="#" class="text-secondary text-decoration-underline">Termos de Uso</a> *
-            <a href="#" class="text-secondary text-decoration-underline">Privacidade</a>
+            <a href="#" class="text-secondary text-decoration-underline">{% trans "Termos de Uso" %}</a> *
+            <a href="#" class="text-secondary text-decoration-underline">{% trans "Privacidade" %}</a>
           </p>
         </div>
       </form>

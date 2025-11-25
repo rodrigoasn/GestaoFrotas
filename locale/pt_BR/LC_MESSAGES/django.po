@@ -1,0 +1,144 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-25 14:49-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+#: .\accounts\apps.py:14
+msgid "Accounts"
+msgstr ""
+
+#: .\accounts\managers.py:21
+msgid "The Email must be set"
+msgstr ""
+
+#: .\accounts\managers.py:37
+msgid "Superuser must have is_staff=True."
+msgstr ""
+
+#: .\accounts\managers.py:39
+msgid "Superuser must have is_superuser=True."
+msgstr ""
+
+#: .\accounts\models.py:15
+msgid "email address"
+msgstr ""
+
+#: .\core\apps.py:14
+msgid "Core"
+msgstr ""
+
+#: .\core\models.py:14
+msgid "Time in minutes of inactivity before session expires."
+msgstr ""
+
+#: .\core\models.py:18
+msgid "System Configuration"
+msgstr ""
+
+#: .\core\models.py:19
+msgid "System Configurations"
+msgstr ""
+
+#: .\templates\base.html:13 .\templates\base.html:71
+#: .\templates\registration\login.html:172
+#: .\templates\registration\login.html:229
+msgid "Gestão de Frotas"
+msgstr ""
+
+#: .\templates\base.html:129
+msgid "Perfil"
+msgstr ""
+
+#: .\templates\base.html:132 .\templates\base.html:172
+msgid "Configurações"
+msgstr ""
+
+#: .\templates\base.html:140
+msgid "Sair"
+msgstr ""
+
+#: .\templates\base.html:160
+msgid "Dashboard"
+msgstr ""
+
+#: .\templates\base.html:163
+msgid "Frotas"
+msgstr ""
+
+#: .\templates\base.html:166
+msgid "Estoque"
+msgstr ""
+
+#: .\templates\base.html:169
+msgid "Logística"
+msgstr ""
+
+#: .\templates\base.html:245
+msgid "Sessão expirada"
+msgstr ""
+
+#: .\templates\base.html:254
+msgid "Sessão"
+msgstr ""
+
+#: .\templates\registration\login.html:6
+msgid "Login - Gestão de Frotas"
+msgstr ""
+
+#: .\templates\registration\login.html:173
+msgid "Eficiência e controle para sua operação logística."
+msgstr ""
+
+#: .\templates\registration\login.html:184
+msgid "Bem-vindo(a)"
+msgstr ""
+
+#: .\templates\registration\login.html:185
+msgid "Insira suas credenciais para acessar."
+msgstr ""
+
+#: .\templates\registration\login.html:193
+msgid "Credenciais inválidas."
+msgstr ""
+
+#: .\templates\registration\login.html:197
+msgid "E-MAIL"
+msgstr ""
+
+#: .\templates\registration\login.html:209
+msgid "SENHA"
+msgstr ""
+
+#: .\templates\registration\login.html:222
+msgid "Lembrar-me"
+msgstr ""
+
+#: .\templates\registration\login.html:224
+msgid "Esqueceu a senha?"
+msgstr ""
+
+#: .\templates\registration\login.html:226
+msgid "ACESSAR SISTEMA"
+msgstr ""
+
+#: .\templates\registration\login.html:231
+msgid "Termos de Uso"
+msgstr ""
+
+#: .\templates\registration\login.html:232
+msgid "Privacidade"
+msgstr ""

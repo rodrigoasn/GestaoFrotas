@@ -1,13 +1,28 @@
 # ────────────────────────────────────────────────────────────────────
 # IMPORTS
 # ────────────────────────────────────────────────────────────────────
-import os
-from django.core.wsgi import get_wsgi_application
+from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 # ────────────────────────────────────────────────────────────────────
-# WSGI
+# MODEL: SYSTEM CONFIGURATION
 # ────────────────────────────────────────────────────────────────────
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'gestaoFrotas.settings')
+class SystemConfiguration(models.Model):
+    session_timeout_minutes = models.PositiveIntegerField(
+        default=30,
+        help_text=_("Time in minutes of inactivity before session expires.")
+    )
 
-application = get_wsgi_application()
+    class Meta:
+        verbose_name = _("System Configuration")
+        verbose_name_plural = _("System Configurations")
+
+    def save(self, *args, **kwargs):
+        if not self.pk and SystemConfiguration.objects.exists():
+            # If you want to prevent creating more than one object
+            return
+        return super(SystemConfiguration, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return _("System Configuration")

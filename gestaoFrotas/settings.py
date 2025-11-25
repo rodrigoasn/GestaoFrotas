@@ -4,6 +4,9 @@ Django 5.2
 Internacionalization: PT-br, en
 """
 
+# ────────────────────────────────────────────────────────────────────
+# IMPORTS
+# ────────────────────────────────────────────────────────────────────
 import os
 from pathlib import Path
 from django.utils.translation import gettext_lazy as _
@@ -61,12 +64,17 @@ THIRD_APPS = [
 INSTALLED_APPS = TEMPLATES_APPS + DJANGO_APPS + MY_APPS + THIRD_APPS
 
 
+
+ROOT_URLCONF = 'gestaoFrotas.urls'
+
+
 # ────────────────────────────────────────────────────────────────────
 # MIDDLEWARE
 # ────────────────────────────────────────────────────────────────────
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware', # internacionalização
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -92,6 +100,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processors.session_expiry',
             ],
         },
     },

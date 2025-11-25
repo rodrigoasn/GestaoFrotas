@@ -1,13 +1,14 @@
 # ────────────────────────────────────────────────────────────────────
 # IMPORTS
 # ────────────────────────────────────────────────────────────────────
-import os
-from django.core.wsgi import get_wsgi_application
+from django.apps import AppConfig
+from django.utils.translation import gettext_lazy as _
 
 
 # ────────────────────────────────────────────────────────────────────
-# WSGI
+# CONFIGURAÇÃO DO APP GERAL
 # ────────────────────────────────────────────────────────────────────
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'gestaoFrotas.settings')
-
-application = get_wsgi_application()
+class CoreConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'core'
+    verbose_name = _('Core')
