@@ -55,14 +55,16 @@ DJANGO_APPS = [
 
 MY_APPS = [
     'accounts.apps.AccountsConfig',
+    'core.apps.CoreConfig',
 ]
 
 THIRD_APPS = [
+    'django_bootstrap5',
+    'django_bootstrap_icons',
 ]
 
 # Application Definition 
 INSTALLED_APPS = TEMPLATES_APPS + DJANGO_APPS + MY_APPS + THIRD_APPS
-
 
 
 ROOT_URLCONF = 'gestaoFrotas.urls'
@@ -159,13 +161,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
 LANGUAGE_CODE = 'pt-br'
-
 TIME_ZONE = 'America/Sao_Paulo'
-
 USE_I18N = True
-
-USE_L10N = True
-
 USE_TZ = True
 
 # Idiomas disponíveis
@@ -220,3 +217,10 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 587))
 EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True").lower() in ["true", "1", "yes"]
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+# ────────────────────────────────────────────────────────────────────
+# BOOTSTRAP ICONS
+# ────────────────────────────────────────────────────────────────────
+BS_ICONS_BASE_URL = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/' # URL base para o download inicial
+BS_ICONS_CACHE = os.path.join(STATIC_ROOT, 'icon_cache') # Onde ele vai salvar

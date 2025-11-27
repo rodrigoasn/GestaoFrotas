@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-25 14:50-0300\n"
+"POT-Creation-Date: 2025-11-27 15:43-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,128 +17,212 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: .\accounts\admin.py:20
+msgid "Informações pessoais"
+msgstr "Personal Information"
+
+#: .\accounts\admin.py:21
+msgid "Permissões"
+msgstr "Permissions"
+
+#: .\accounts\admin.py:22
+msgid "Datas importantes"
+msgstr "Important Dates"
+
 #: .\accounts\apps.py:14
-msgid "Accounts"
-msgstr ""
+msgid "Contas"
+msgstr "Accounts"
 
 #: .\accounts\managers.py:21
-msgid "The Email must be set"
-msgstr ""
+msgid "O email deve ser informado"
+msgstr "The email must be provided"
 
 #: .\accounts\managers.py:37
-msgid "Superuser must have is_staff=True."
-msgstr ""
+msgid "Superuser tem que ter is_staff=True"
+msgstr "Superuser must have is_staff=True"
 
 #: .\accounts\managers.py:39
-msgid "Superuser must have is_superuser=True."
-msgstr ""
+msgid "Superuser tem que ter is_superuser=True"
+msgstr "Superuser must have is_superuser=True"
 
 #: .\accounts\models.py:15
-msgid "email address"
-msgstr ""
+msgid "endereço de email"
+msgstr "email address"
 
 #: .\core\apps.py:14
-msgid "Core"
-msgstr ""
+msgid "Geral"
+msgstr "General"
 
 #: .\core\models.py:14
-msgid "Time in minutes of inactivity before session expires."
-msgstr ""
+msgid "Tempo em minutos de inatividade antes da sessão expirar."
+msgstr "Time in minutes of inactivity before the session expires."
 
-#: .\core\models.py:18
-msgid "System Configuration"
-msgstr ""
+#: .\core\models.py:18 .\core\models.py:28
+msgid "Configuração do Sistema"
+msgstr "System Configuration"
 
 #: .\core\models.py:19
-msgid "System Configurations"
-msgstr ""
+msgid "Configurações do Sistema"
+msgstr "System Settings"
 
-#: .\templates\base.html:13 .\templates\base.html:71
-#: .\templates\registration\login.html:172
-#: .\templates\registration\login.html:229
+#: .\templates\base.html:15 .\templates\base.html:84
+#: .\templates\registration\base.html:13
+#: .\templates\registration\login.html:170
+#: .\templates\registration\login.html:227
 msgid "Gestão de Frotas"
-msgstr ""
+msgstr "Vehicle Management"
 
-#: .\templates\base.html:129
+#: .\templates\base.html:145
 msgid "Perfil"
-msgstr ""
+msgstr "Profile"
 
-#: .\templates\base.html:132 .\templates\base.html:172
+#: .\templates\base.html:148 .\templates\base.html:197
+#: .\templates\dashboard.html:82
 msgid "Configurações"
-msgstr ""
+msgstr "Settings"
 
-#: .\templates\base.html:140
+#: .\templates\base.html:156
 msgid "Sair"
-msgstr ""
+msgstr "Logout"
 
-#: .\templates\base.html:160
+#: .\templates\base.html:177
 msgid "Dashboard"
-msgstr ""
+msgstr "Dashboard"
 
-#: .\templates\base.html:163
+#: .\templates\base.html:182 .\templates\dashboard.html:25
 msgid "Frotas"
-msgstr ""
+msgstr "Fleets"
 
-#: .\templates\base.html:166
+#: .\templates\base.html:187 .\templates\dashboard.html:63
 msgid "Estoque"
-msgstr ""
+msgstr "Inventory"
 
-#: .\templates\base.html:169
+#: .\templates\base.html:192 .\templates\dashboard.html:44
 msgid "Logística"
-msgstr ""
+msgstr "Logistics"
 
-#: .\templates\base.html:245
+#: .\templates\base.html:265
 msgid "Sessão expirada"
-msgstr ""
+msgstr "Session expired"
 
-#: .\templates\base.html:254
+#: .\templates\base.html:274
 msgid "Sessão"
-msgstr ""
+msgstr "Session"
 
-#: .\templates\registration\login.html:6
+#: .\templates\dashboard.html:4
+msgid "Dashboard - Gestão de Frotas"
+msgstr "Dashboard - Vehicle Management"
+
+#: .\templates\dashboard.html:9
+msgid "Painel de Controle"
+msgstr "Control Panel"
+
+#: .\templates\dashboard.html:11
+msgid "Gerar Relatório"
+msgstr "Generate Report"
+
+#: .\templates\dashboard.html:26
+msgid "12 Veículos"
+msgstr "12 Vehicles"
+
+#: .\templates\dashboard.html:45
+msgid "5 Rotas Ativas"
+msgstr "5 Active Routes"
+
+#: .\templates\dashboard.html:64
+#, python-format
+msgid "85%% Cap."
+msgstr "85%% Cap."
+
+#: .\templates\dashboard.html:83
+msgid "Sistema"
+msgstr "System"
+
+#: .\templates\dashboard.html:100
+msgid "Visão Geral da Frota"
+msgstr "Overview of the Fleet"
+
+#: .\templates\dashboard.html:103
+msgid "Gráfico de desempenho ou mapa de localização virá aqui."
+msgstr "Performance chart or location map will go here."
+
+#: .\templates\dashboard.html:106
+msgid "Placeholder para Gráfico"
+msgstr "Placeholder for Chart"
+
+#: .\templates\dashboard.html:114
+msgid "Status Recentes"
+msgstr "Recent Status"
+
+#: .\templates\dashboard.html:119
+msgid "Veículo ABC-1234"
+msgstr "Vehicle ABC-1234"
+
+#: .\templates\dashboard.html:120
+msgid "Em Rota"
+msgstr "On Route"
+
+#: .\templates\dashboard.html:123
+msgid "Veículo XYZ-9876"
+msgstr "Vehicle XYZ-9876"
+
+#: .\templates\dashboard.html:124
+msgid "Manutenção"
+msgstr "Maintenance"
+
+#: .\templates\dashboard.html:127
+msgid "Veículo DEF-5678"
+msgstr "Vehicle DEF-5678"
+
+#: .\templates\dashboard.html:128
+msgid "Parado"
+msgstr "Stopped"
+
+#: .\templates\registration\login.html:7
 msgid "Login - Gestão de Frotas"
-msgstr ""
+msgstr "Login - Vehicle Management"
 
-#: .\templates\registration\login.html:173
+#: .\templates\registration\login.html:171
 msgid "Eficiência e controle para sua operação logística."
-msgstr ""
+msgstr "Efficiency and control for your logistics operation."
 
-#: .\templates\registration\login.html:184
+#: .\templates\registration\login.html:182
 msgid "Bem-vindo(a)"
-msgstr ""
+msgstr "Welcome"
 
-#: .\templates\registration\login.html:185
+#: .\templates\registration\login.html:183
 msgid "Insira suas credenciais para acessar."
-msgstr ""
+msgstr "Enter your credentials to access."
 
-#: .\templates\registration\login.html:193
+#: .\templates\registration\login.html:191
 msgid "Credenciais inválidas."
-msgstr ""
+msgstr "Invalid credentials."
 
-#: .\templates\registration\login.html:197
+#: .\templates\registration\login.html:195
 msgid "E-MAIL"
-msgstr ""
+msgstr "E-MAIL"
 
-#: .\templates\registration\login.html:209
+#: .\templates\registration\login.html:207
 msgid "SENHA"
-msgstr ""
+msgstr "PASSWORD"
+
+#: .\templates\registration\login.html:220
+msgid "Lembrar-me"
+msgstr "Remember me"
 
 #: .\templates\registration\login.html:222
-msgid "Lembrar-me"
-msgstr ""
+msgid "Esqueceu a senha?"
+msgstr "Forgot password?"
 
 #: .\templates\registration\login.html:224
-msgid "Esqueceu a senha?"
-msgstr ""
-
-#: .\templates\registration\login.html:226
 msgid "ACESSAR SISTEMA"
-msgstr ""
+msgstr "ACCESS SYSTEM"
 
-#: .\templates\registration\login.html:231
+#: .\templates\registration\login.html:229
 msgid "Termos de Uso"
-msgstr ""
+msgstr "Terms of Use"
 
-#: .\templates\registration\login.html:232
+#: .\templates\registration\login.html:230
 msgid "Privacidade"
-msgstr ""
+msgstr "Privacy"
