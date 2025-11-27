@@ -1,5 +1,5 @@
 # Dockerfile
-FROM python:3.12-slim
+FROM python:3.13-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -19,18 +19,18 @@ COPY requirements.txt /app/
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
 # Copy project
-COPY ./gestaoFrotas /app/
+COPY . /app/
 
 # Expose port
-EXPOSE 8000
+EXPOSE 8001
 
 # Copy entrypoint script
-COPY entrypoint.sh /app/
-RUN sed -i 's/\r$//' /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
+COPY entrypoint.sh /usr/local/bin/
+RUN sed -i 's/\r$//' /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Set entrypoint
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["entrypoint.sh"]
 
 # Run gunicorn (or manage.py runserver for dev)
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8001"]

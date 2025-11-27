@@ -1,23 +1,23 @@
 {% load static %}
+{% load i18n %}
+{% load django_bootstrap5 %}
+{% load bootstrap_icons %}
 
 <!DOCTYPE html>
 
-<html lang="pt-br" data-bs-theme="light">
+<html lang="{{ LANGUAGE_CODE }}" data-bs-theme="light">
 
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>
-      {% block title %}Gestão de Frotas{% endblock %}
+      {% block title %}{% trans "Gestão de Frotas" %}{% endblock %}
     </title>
 
-    <!-- Bootstrap 5 CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          rel="stylesheet" />
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+    <!-- Bootstrap 5 PIP -->
+    {% bootstrap_css %}
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     
@@ -56,6 +56,16 @@
         color: white;
         font-weight: bold;
       }
+      /* Dark Mode Toggle Icons */
+      #icon-sun {
+        display: none;
+      }
+      [data-bs-theme="dark"] #icon-moon {
+        display: none;
+      }
+      [data-bs-theme="dark"] #icon-sun {
+        display: inline-block;
+      }
     </style>
   </head>
 
@@ -64,25 +74,56 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg border-bottom">
       <div class="container-fluid">
-        <button type="button" id="sidebarCollapse" class="btn btn-link">
-          <i class="bi bi-list fs-4"></i>
+        
+        <button type="button" id="sidebarCollapse" class="btn btn-link text-decoration-none text-reset">
+          {% bs_icon 'list' size='1.5rem' %}
         </button>
-        <a class="navbar-brand ms-2" href="{% url 'dashboard' %}"> <i class="bi bi-truck me-2"></i>Gestão de Frotas </a>
+
+        <a class="navbar-brand ms-2" href="{% url 'dashboard' %}"> 
+          {% bs_icon 'truck' extra_classes='me-2' %}
+          {% trans "Gestão de Frotas" %} 
+        </a>
+
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
 
+            <!-- Language Switcher -->
+            <li class="nav-item dropdown me-3">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {% bs_icon 'globe' %}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                {% get_current_language as LANGUAGE_CODE %}
+                {% get_available_languages as LANGUAGES %}
+                {% get_language_info_list for LANGUAGES as languages %}
+                {% for language in languages %}
+                  <li>
+                    <form action="{% url 'set_language' %}" method="post">
+                      {% csrf_token %}
+                      <input name="next" type="hidden" value="{{ redirect_to }}">
+                      <input name="language" type="hidden" value="{{ language.code }}">
+                      <button type="submit" class="dropdown-item {% if language.code == LANGUAGE_CODE %}active{% endif %}">
+                        {{ language.name_local }} ({{ language.code }})
+                      </button>
+                    </form>
+                  </li>
+                {% endfor %}
+              </ul>
+            </li>
+
             <!-- Dark Mode Toggle -->
             <li class="nav-item me-3">
               <button class="btn btn-link nav-link" id="darkModeToggle">
-                <i class="bi bi-moon-fill" id="themeIcon"></i>
+                <span id="icon-moon">{% bs_icon 'moon-fill' %}</span>
+                <span id="icon-sun">{% bs_icon 'sun-fill' %}</span>
               </button>
             </li>
 
             <!-- Notifications -->
             <li class="nav-item me-3">
               <a class="nav-link" href="#">
-                <i class="bi bi-bell"></i>
+                {% bs_icon 'bell' %}
               </a>
             </li>
 
@@ -94,14 +135,17 @@
                  data-bs-toggle="dropdown"
                  aria-expanded="false">
                 <div class="avatar-placeholder me-2">{{ user.email|make_list|first|upper }}</div>
-                <span>{{ user.email }}</span>
+                <div class="d-flex flex-column align-items-start">
+                  <span>{{ user.email }}</span>
+                  <div id="session-timer" class="text-muted" style="font-size: 0.65rem; line-height: 1;"></div>
+                </div>
               </a>
               <ul class="dropdown-menu dropdown-menu-end">
                 <li>
-                  <a class="dropdown-item" href="#">Perfil</a>
+                  <a class="dropdown-item" href="#">{% trans "Perfil" %}</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="#">Configurações</a>
+                  <a class="dropdown-item" href="#">{% trans "Configurações" %}</a>
                 </li>
                 <li>
                   <hr class="dropdown-divider" />
@@ -109,7 +153,7 @@
                 <li>
                   <form action="{% url 'logout' %}" method="post">
                     {% csrf_token %}
-                    <button type="submit" class="dropdown-item text-danger">Sair</button>
+                    <button type="submit" class="dropdown-item text-danger">{% trans "Sair" %}</button>
                   </form>
                 </li>
               </ul>
@@ -129,19 +173,29 @@
           <ul class="list-unstyled components">
             <li class="mb-2">
               <a href="{% url 'dashboard' %}"
-                 class="nav-link active px-3 py-2 rounded"> <i class="bi bi-grid me-2"></i> Dashboard </a>
+                 class="nav-link active px-3 py-2 rounded"> 
+                 {% bs_icon 'grid' extra_classes='me-2' %} {% trans "Dashboard" %} 
+              </a>
             </li>
             <li class="mb-2">
-              <a href="#" class="nav-link px-3 py-2 rounded"> <i class="bi bi-truck me-2"></i> Frotas </a>
+              <a href="#" class="nav-link px-3 py-2 rounded"> 
+                {% bs_icon 'truck' extra_classes='me-2' %} {% trans "Frotas" %} 
+              </a>
             </li>
             <li class="mb-2">
-              <a href="#" class="nav-link px-3 py-2 rounded"> <i class="bi bi-box-seam me-2"></i> Estoque </a>
+              <a href="#" class="nav-link px-3 py-2 rounded"> 
+                {% bs_icon 'box-seam' extra_classes='me-2' %} {% trans "Estoque" %} 
+              </a>
             </li>
             <li class="mb-2">
-              <a href="#" class="nav-link px-3 py-2 rounded"> <i class="bi bi-map me-2"></i> Logística </a>
+              <a href="#" class="nav-link px-3 py-2 rounded"> 
+                {% bs_icon 'map' extra_classes='me-2' %} {% trans "Logística" %} 
+              </a>
             </li>
             <li class="mb-2">
-              <a href="#" class="nav-link px-3 py-2 rounded"> <i class="bi bi-gear me-2"></i> Configurações </a>
+              <a href="{% url 'settings' %}" class="nav-link px-3 py-2 rounded"> 
+                {% bs_icon 'gear' extra_classes='me-2' %} {% trans "Configurações" %} 
+              </a>
             </li>
           </ul>
         </div>
@@ -166,25 +220,28 @@
 
     </div>
     
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS PIP -->
+    {% bootstrap_javascript %}
+
     <!-- Custom JS -->
     <script>
+      //────────────────────────────────────────────────────────────────────
       // Sidebar Toggle
+      //────────────────────────────────────────────────────────────────────
       document.getElementById('sidebarCollapse').addEventListener('click', function () {
         document.getElementById('sidebar').classList.toggle('active');
       });
 
+      //────────────────────────────────────────────────────────────────────
       // Dark Mode Logic
+      //────────────────────────────────────────────────────────────────────
       const darkModeToggle = document.getElementById('darkModeToggle');
-      const themeIcon = document.getElementById('themeIcon');
       const htmlElement = document.documentElement;
 
       // Check local storage
       const currentTheme = localStorage.getItem('theme');
       if (currentTheme) {
         htmlElement.setAttribute('data-bs-theme', currentTheme);
-        updateIcon(currentTheme);
       }
 
       darkModeToggle.addEventListener('click', () => {
@@ -193,18 +250,35 @@
 
         htmlElement.setAttribute('data-bs-theme', newTheme);
         localStorage.setItem('theme', newTheme);
-        updateIcon(newTheme);
       });
 
-      function updateIcon(theme) {
-        if (theme === 'dark') {
-          themeIcon.classList.remove('bi-moon-fill');
-          themeIcon.classList.add('bi-sun-fill');
-        } else {
-          themeIcon.classList.remove('bi-sun-fill');
-          themeIcon.classList.add('bi-moon-fill');
-        }
-      }
+      //────────────────────────────────────────────────────────────────────
+      // Session Timeout Countdown
+      //────────────────────────────────────────────────────────────────────
+      document.addEventListener('DOMContentLoaded', function() {
+          let timeLeft = {{ session_expiry_age|default:0 }};
+          const timerElement = document.getElementById('session-timer');
+          
+          if (timeLeft > 0 && timerElement) {
+              const updateTimer = () => {
+                  if (timeLeft <= 0) {
+                      timerElement.textContent = "{% trans 'Sessão expirada' %}";
+                      // Optional: Redirect to logout or show modal
+                      // window.location.href = "{% url 'logout' %}";
+                      return;
+                  }
+                  
+                  const minutes = Math.floor(timeLeft / 60);
+                  const seconds = timeLeft % 60;
+                  
+                  timerElement.textContent = `{% trans 'Sessão' %}: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                  timeLeft--;
+              };
+              
+              updateTimer(); // Initial call
+              setInterval(updateTimer, 1000);
+          }
+      });
     </script>
   </body>
 </html>

@@ -4,11 +4,12 @@ services:
   web:
     build: .
     image: cfrotas:latest
+    environment:
+      - PYTHONUNBUFFERED=1
     command: python manage.py runserver 0.0.0.0:8001
     container_name: cfrotas_django_app
     volumes:
-      - ./gestaoFrotas:/app
-      - ./entrypoint.sh:/app/entrypoint.sh
+      - .:/app
     ports:
       - '8001:8001'
     env_file:
