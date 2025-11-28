@@ -1,14 +1,13 @@
 # ────────────────────────────────────────────────────────────────────
 # IMPORTS
 # ────────────────────────────────────────────────────────────────────
+from django.urls import path
+from .views import SettingsView
 
 
 # ────────────────────────────────────────────────────────────────────
-# SESSÃO EXPIRADA
+# URLS
 # ────────────────────────────────────────────────────────────────────
-def session_expiry(request):
-    if request.user.is_authenticated:
-        return {
-            'session_expiry_age': request.session.get_expiry_age(),
-        }
-    return {}
+urlpatterns = [
+    path('settings/', SettingsView.as_view(), name='settings'),
+]

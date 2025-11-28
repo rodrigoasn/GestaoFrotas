@@ -2,9 +2,8 @@
 # IMPORTS
 # ────────────────────────────────────────────────────────────────────
 from django.contrib import admin
-from django.urls import path, include
-from core.views import SettingsView
 from django.conf.urls.i18n import i18n_patterns
+from django.urls import path, include
 
 
 # ────────────────────────────────────────────────────────────────────
@@ -16,7 +15,13 @@ urlpatterns = [
 
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
-    path('accounts/', include('django.contrib.auth.urls')),
+    
+    # URLs de autenticação - é incluido várias URLs de autenticação através desta rota ex: login, logout, password_change, password_change/done, password_reset, password_reset/done, password_reset/confirm, password_reset/complete
+    path('accounts/', include('django.contrib.auth.urls')), 
+
+    # URLs da APP accounts
     path('', include('accounts.urls')),
-    path('settings/', SettingsView.as_view(), name='settings'),
+
+    # URLs da APP core
+    path('', include('core.urls')),
 )

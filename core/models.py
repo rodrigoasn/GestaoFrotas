@@ -21,7 +21,7 @@ class SystemConfiguration(models.Model):
     # save implementado para que não seja possível criar mais de uma configuração
     def save(self, *args, **kwargs):
         if not self.pk and SystemConfiguration.objects.exists():
-            # If you want to prevent creating more than one object
+            # Se você quiser prevenir a criação de mais de um objeto
             return
         return super(SystemConfiguration, self).save(*args, **kwargs)
 

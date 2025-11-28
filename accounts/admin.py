@@ -13,7 +13,7 @@ from .models import CustomUser
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     ordering = ('email',)
-    list_display = ('email', 'is_staff', 'is_active')
+    list_display = ('email', 'last_login', 'is_staff', 'is_superuser', 'is_active')
     search_fields = ('email',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),

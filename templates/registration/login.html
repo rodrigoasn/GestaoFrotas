@@ -162,10 +162,10 @@
   </style>
 
   <div class="wrapper">
-    <!-- Login Card -->
+    <!-- Card de Login -->
     <div class="login-card">
 
-      <!-- Left Side: Image/Banner -->
+      <!-- Banner: Imagem/Imagem -->
       <div class="login-banner">
         <div class="banner-content">
           <h2 class="fw-bold">{% trans "Gestão de Frotas" %}</h2>
@@ -173,10 +173,10 @@
         </div>
       </div>
 
-      <!-- Right Side: Login Form -->
+      <!-- Formulário de Login -->
       <div class="login-form-section">
         
-        <!-- Language Switcher -->
+        <!-- Alternador de idioma -->
         <div class="position-absolute top-0 end-0 m-3">
           <div class="dropdown">
             <button class="btn btn-link text-secondary text-decoration-none dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -202,7 +202,7 @@
           </div>
         </div>
 
-        <!-- Logo and Title -->
+        <!-- Logo e Título -->
         <div class="mb-5">
           <div class="brand-logo text-primary">
             {% bs_icon 'truck-front-fill' size='3rem' extra_classes='me-2' %}
@@ -212,7 +212,7 @@
           <p class="text-secondary">{% trans "Insira suas credenciais para acessar." %}</p>
         </div>
 
-        <!-- Form -->
+        <!-- Formulário de Login -->
         <form method="post">
           {% csrf_token %}
           {% if form.errors %}
@@ -227,7 +227,7 @@
               <input type="email"
                      name="username"
                      class="form-control"
-                     placeholder="seu@email.com"
+                     placeholder="{% trans "user@example.com" %}"
                      required
                      autofocus />
             </div>
@@ -253,7 +253,7 @@
           <button type="submit" class="btn btn-primary w-100 btn-login">{% trans "ACESSAR SISTEMA" %}</button>
           <div class="mt-4 text-center">
             <p class="small text-secondary mb-0">
-              @ 2025 {% trans "Gestão de Frotas" %}.
+              @ {% now "Y" %} {% trans "Gestão de Frotas" %}.
               <br />
               <a href="#" class="text-secondary text-decoration-underline">{% trans "Termos de Uso" %}</a> *
               <a href="#" class="text-secondary text-decoration-underline">{% trans "Privacidade" %}</a>

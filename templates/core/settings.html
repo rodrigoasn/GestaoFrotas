@@ -29,9 +29,11 @@
                   {{ form.session_timeout_minutes.label }}
                 </label>
                 {{ form.session_timeout_minutes }}
+
                 {% if form.session_timeout_minutes.help_text %}
                   <div class="form-text">{{ form.session_timeout_minutes.help_text }}</div>
                 {% endif %}
+                
                 {% if form.session_timeout_minutes.errors %}
                   <div class="text-danger small">{{ form.session_timeout_minutes.errors }}</div>
                 {% endif %}
