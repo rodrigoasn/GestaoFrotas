@@ -1,6 +1,13 @@
+# ────────────────────────────────────────────────────────────────────
+# IMPORTS
+# ────────────────────────────────────────────────────────────────────
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
+
+# ────────────────────────────────────────────────────────────────────
+# TESTS
+# ────────────────────────────────────────────────────────────────────
 class UsersManagersTests(TestCase):
 
     def test_create_user(self):
@@ -11,8 +18,8 @@ class UsersManagersTests(TestCase):
         self.assertFalse(user.is_staff)
         self.assertFalse(user.is_superuser)
         try:
-            # username is None for the AbstractUser option
-            # username does not exist for the AbstractBaseUser option
+            # Nome de usuário é None para a opção AbstractUser
+            # Nome de usuário não existe para a opção AbstractBaseUser
             self.assertIsNone(user.username)
         except AttributeError:
             pass
@@ -31,8 +38,8 @@ class UsersManagersTests(TestCase):
         self.assertTrue(admin_user.is_staff)
         self.assertTrue(admin_user.is_superuser)
         try:
-            # username is None for the AbstractUser option
-            # username does not exist for the AbstractBaseUser option
+            # Nome de usuário é None para a opção AbstractUser
+            # Nome de usuário não existe para a opção AbstractBaseUser
             self.assertIsNone(admin_user.username)
         except AttributeError:
             pass

@@ -1,0 +1,293 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-28 13:03-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: .\accounts\admin.py:20
+msgid "Informações pessoais"
+msgstr "Personal Information"
+
+#: .\accounts\admin.py:21
+msgid "Permissões"
+msgstr "Permissions"
+
+#: .\accounts\admin.py:22
+msgid "Datas importantes"
+msgstr "Important Dates"
+
+#: .\accounts\apps.py:14
+msgid "Contas"
+msgstr "Accounts"
+
+#: .\accounts\managers.py:21
+msgid "O email deve ser informado"
+msgstr "The email must be provided"
+
+#: .\accounts\managers.py:37
+msgid "Superuser tem que ter is_staff=True"
+msgstr "Superuser must have is_staff=True"
+
+#: .\accounts\managers.py:39
+msgid "Superuser tem que ter is_superuser=True"
+msgstr "Superuser must have is_superuser=True"
+
+#: .\accounts\models.py:15
+msgid "endereço de email"
+msgstr "email address"
+
+#: .\core\apps.py:14 .\templates\core\settings.html:20
+msgid "Geral"
+msgstr "General"
+
+#: .\core\models.py:14
+msgid "Tempo em minutos de inatividade antes da sessão expirar."
+msgstr "Time in minutes of inactivity before the session expires."
+
+#: .\core\models.py:18 .\core\models.py:33
+msgid "Configuração do Sistema"
+msgstr "System Configuration"
+
+#: .\core\models.py:19 .\templates\core\settings.html:13
+msgid "Configurações do Sistema"
+msgstr "System Settings"
+
+#: .\core\views.py:35
+msgid "Configurações atualizadas com sucesso!"
+msgstr "Settings updated successfully!"
+
+#: .\core\views.py:38
+msgid "Erro ao atualizar configurações."
+msgstr "Error updating settings."
+
+#: .\templates\base.html:15 .\templates\base.html:93
+#: .\templates\registration\base.html:13
+#: .\templates\registration\login.html:171
+#: .\templates\registration\login.html:256
+msgid "Gestão de Frotas"
+msgstr "Vehicle Management"
+
+#: .\templates\base.html:157
+msgid "Superuser"
+msgstr "Superuser"
+
+#: .\templates\base.html:159
+msgid "Equipe"
+msgstr "Team"
+
+#: .\templates\base.html:163
+msgid "Usuário"
+msgstr "User"
+
+#: .\templates\base.html:173
+msgid "Perfil"
+msgstr "Profile"
+
+#: .\templates\base.html:181 .\templates\base.html:240
+#: .\templates\dashboard.html:82
+msgid "Configurações"
+msgstr "Settings"
+
+#: .\templates\base.html:189
+msgid "Último login"
+msgstr "Last login"
+
+#: .\templates\base.html:199 .\templates\base.html:314
+#: .\templates\base.html:325
+msgid "Sair"
+msgstr "Logout"
+
+#: .\templates\base.html:220
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: .\templates\base.html:225 .\templates\dashboard.html:25
+msgid "Frotas"
+msgstr "Fleets"
+
+#: .\templates\base.html:230 .\templates\dashboard.html:63
+msgid "Estoque"
+msgstr "Inventory"
+
+#: .\templates\base.html:235 .\templates\dashboard.html:44
+msgid "Logística"
+msgstr "Logistics"
+
+#: .\templates\base.html:284
+msgid "Sessão Expirando"
+msgstr "Session expiring"
+
+#: .\templates\base.html:288
+msgid "Sua sessão irá expirar em"
+msgstr "Your session will expire in"
+
+#: .\templates\base.html:288
+msgid "segundos. Deseja continuar logado?"
+msgstr "seconds. Do you want to continue logged in?"
+
+#: .\templates\base.html:295
+msgid "Deslogar"
+msgstr "Logout"
+
+#: .\templates\base.html:300
+msgid "Ficar"
+msgstr "Stay"
+
+#: .\templates\base.html:318
+msgid "Tem certeza que deseja sair?"
+msgstr "Are you sure you want to leave?"
+
+#: .\templates\base.html:330
+msgid "Cancelar"
+msgstr "Cancel"
+
+#: .\templates\base.html:397
+msgid "Sessão"
+msgstr "Session"
+
+#: .\templates\base.html:402
+msgid "Sessão expirada"
+msgstr "Session expired"
+
+#: .\templates\core\settings.html:7
+msgid "Configurações - Gestão de Frotas"
+msgstr "Settings - Vehicle Management"
+
+#: .\templates\core\settings.html:44
+msgid "Salvar Configurações"
+msgstr "Save Settings"
+
+#: .\templates\dashboard.html:4
+msgid "Dashboard - Gestão de Frotas"
+msgstr "Dashboard - Vehicle Management"
+
+#: .\templates\dashboard.html:9
+msgid "Painel de Controle"
+msgstr "Control Panel"
+
+#: .\templates\dashboard.html:11
+msgid "Gerar Relatório"
+msgstr "Generate Report"
+
+#: .\templates\dashboard.html:26
+msgid "12 Veículos"
+msgstr "12 Vehicles"
+
+#: .\templates\dashboard.html:45
+msgid "5 Rotas Ativas"
+msgstr "5 Active Routes"
+
+#: .\templates\dashboard.html:64
+#, python-format
+msgid "85%% Cap."
+msgstr "85%% Cap."
+
+#: .\templates\dashboard.html:83
+msgid "Sistema"
+msgstr "System"
+
+#: .\templates\dashboard.html:100
+msgid "Visão Geral da Frota"
+msgstr "Overview of the Fleet"
+
+#: .\templates\dashboard.html:103
+msgid "Gráfico de desempenho ou mapa de localização virá aqui."
+msgstr "Performance chart or location map will go here."
+
+#: .\templates\dashboard.html:106
+msgid "Placeholder para Gráfico"
+msgstr "Placeholder for Chart"
+
+#: .\templates\dashboard.html:114
+msgid "Status Recentes"
+msgstr "Recent Status"
+
+#: .\templates\dashboard.html:119
+msgid "Veículo ABC-1234"
+msgstr "Vehicle ABC-1234"
+
+#: .\templates\dashboard.html:120
+msgid "Em Rota"
+msgstr "On Route"
+
+#: .\templates\dashboard.html:123
+msgid "Veículo XYZ-9876"
+msgstr "Vehicle XYZ-9876"
+
+#: .\templates\dashboard.html:124
+msgid "Manutenção"
+msgstr "Maintenance"
+
+#: .\templates\dashboard.html:127
+msgid "Veículo DEF-5678"
+msgstr "Vehicle DEF-5678"
+
+#: .\templates\dashboard.html:128
+msgid "Parado"
+msgstr "Stopped"
+
+#: .\templates\registration\login.html:7
+msgid "Login - Gestão de Frotas"
+msgstr "Login - Vehicle Management"
+
+#: .\templates\registration\login.html:172
+msgid "Eficiência e controle para sua operação logística."
+msgstr "Efficiency and control for your logistics operation."
+
+#: .\templates\registration\login.html:211
+msgid "Bem-vindo(a)"
+msgstr "Welcome"
+
+#: .\templates\registration\login.html:212
+msgid "Insira suas credenciais para acessar."
+msgstr "Enter your credentials to access."
+
+#: .\templates\registration\login.html:220
+msgid "Credenciais inválidas."
+msgstr "Invalid credentials."
+
+#: .\templates\registration\login.html:224
+msgid "E-MAIL"
+msgstr "E-MAIL"
+
+#: .\templates\registration\login.html:230
+msgid "user@example.com"
+msgstr "user@example.com"
+
+#: .\templates\registration\login.html:236
+msgid "SENHA"
+msgstr "PASSWORD"
+
+#: .\templates\registration\login.html:249
+msgid "Lembrar-me"
+msgstr "Remember me"
+
+#: .\templates\registration\login.html:251
+msgid "Esqueceu a senha?"
+msgstr "Forgot password?"
+
+#: .\templates\registration\login.html:253
+msgid "ACESSAR SISTEMA"
+msgstr "ACCESS SYSTEM"
+
+#: .\templates\registration\login.html:258
+msgid "Termos de Uso"
+msgstr "Terms of Use"
+
+#: .\templates\registration\login.html:259
+msgid "Privacidade"
+msgstr "Privacy"

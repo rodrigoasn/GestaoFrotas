@@ -4,6 +4,9 @@ Django 5.2
 Internacionalization: PT-br, en
 """
 
+# ────────────────────────────────────────────────────────────────────
+# IMPORTS
+# ────────────────────────────────────────────────────────────────────
 import os
 from pathlib import Path
 from django.utils.translation import gettext_lazy as _
@@ -27,12 +30,15 @@ DEBUG = os.environ.get('DEBUG', '0') == '1'
 ENVIRONMENT = os.environ.get("ENVIRONMENT")
 ALLOWED_HOSTS = ['*']
 
-# Custom User Model
+# Model de usuário personalizado
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
-# Login Redirect
-LOGIN_REDIRECT_URL = 'dashboard'
+# Para onde ir depois do login com sucesso (ex: dashboard ou home)
+LOGIN_REDIRECT_URL = 'dashboard'  # ou o 'name' da sua url principal
+# Para onde ir depois de fazer logout
 LOGOUT_REDIRECT_URL = 'login'
+# URL para quem tenta acessar uma página restrita sem estar logado
+LOGIN_URL = 'login'
 
 
 # ────────────────────────────────────────────────────────────────────
@@ -52,12 +58,15 @@ DJANGO_APPS = [
 
 MY_APPS = [
     'accounts.apps.AccountsConfig',
+    'core.apps.CoreConfig',
 ]
 
 THIRD_APPS = [
+    'django_bootstrap5',
+    'django_bootstrap_icons',
 ]
 
-# Application Definition 
+# Aplicativos instalados 
 INSTALLED_APPS = TEMPLATES_APPS + DJANGO_APPS + MY_APPS + THIRD_APPS
 
 
@@ -67,14 +76,16 @@ INSTALLED_APPS = TEMPLATES_APPS + DJANGO_APPS + MY_APPS + THIRD_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware', # internacionalização
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'accounts.middleware.SessionTimeoutMiddleware', # Middleware para tempo de sessão
+    'core.middleware.SessionTimeoutMiddleware', # Middleware para tempo de sessão
 ]
 
+# URL de configuração
 ROOT_URLCONF = 'gestaoFrotas.urls'
 
 
@@ -92,6 +103,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processors.session_expiry',
             ],
         },
     },
@@ -105,7 +117,6 @@ WSGI_APPLICATION = 'gestaoFrotas.wsgi.application'
 # ────────────────────────────────────────────────────────────────────
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get('DB_ENGINE'),
@@ -121,9 +132,8 @@ DATABASES = {
 # ────────────────────────────────────────────────────────────────────
 # AUTH
 # ────────────────────────────────────────────────────────────────────
-# Password validation
+# Validação de senha
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -146,17 +156,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # ────────────────────────────────────────────────────────────────────
 # i18n / timezone
 # ────────────────────────────────────────────────────────────────────
-# Internationalization
+# Internacionalização
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
-
 LANGUAGE_CODE = 'pt-br'
-
 TIME_ZONE = 'America/Sao_Paulo'
-
 USE_I18N = True
-
-USE_L10N = True
-
 USE_TZ = True
 
 # Idiomas disponíveis
@@ -211,3 +215,10 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 587))
 EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True").lower() in ["true", "1", "yes"]
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+# ────────────────────────────────────────────────────────────────────
+# BOOTSTRAP ICONS
+# ────────────────────────────────────────────────────────────────────
+BS_ICONS_BASE_URL = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/' # URL base para o download inicial
+BS_ICONS_CACHE = os.path.join(STATIC_ROOT, 'icon_cache') # Onde ele vai salvar

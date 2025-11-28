@@ -1,23 +1,23 @@
 {% load static %}
+{% load i18n %}
+{% load django_bootstrap5 %}
+{% load bootstrap_icons %}
 
 <!DOCTYPE html>
 
-<html lang="pt-br" data-bs-theme="light">
+<html lang="{{ LANGUAGE_CODE }}" data-bs-theme="light">
 
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>
-      {% block title %}Gestão de Frotas{% endblock %}
+      {% block title %}{% trans "Gestão de Frotas" %}{% endblock %}
     </title>
 
-    <!-- Bootstrap 5 CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          rel="stylesheet" />
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+    <!-- Bootstrap 5 PIP -->
+    {% bootstrap_css %}
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     
@@ -56,6 +56,25 @@
         color: white;
         font-weight: bold;
       }
+      /* Dark Mode Toggle Icons */
+      #icon-sun {
+        display: none;
+      }
+      [data-bs-theme="dark"] #icon-moon {
+        display: none;
+      }
+      [data-bs-theme="dark"] #icon-sun {
+        display: inline-block;
+      }
+      /* Active Link Styling */
+      #sidebar .nav-link.active {
+        background-color: #0d6efd;
+        color: white;
+      }
+      .dropdown-item.active, .dropdown-item:active {
+        background-color: #0d6efd;
+        color: white;
+      }
     </style>
   </head>
 
@@ -64,29 +83,60 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg border-bottom">
       <div class="container-fluid">
-        <button type="button" id="sidebarCollapse" class="btn btn-link">
-          <i class="bi bi-list fs-4"></i>
+        
+        <button type="button" id="sidebarCollapse" class="btn btn-link text-decoration-none text-reset">
+          {% bs_icon 'list' size='1.5rem' %}
         </button>
-        <a class="navbar-brand ms-2" href="{% url 'dashboard' %}"> <i class="bi bi-truck me-2"></i>Gestão de Frotas </a>
+
+        <a class="navbar-brand ms-2" href="{% url 'dashboard' %}"> 
+          {% bs_icon 'truck' extra_classes='me-2' %}
+          {% trans "Gestão de Frotas" %} 
+        </a>
+
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
 
-            <!-- Dark Mode Toggle -->
+            <!-- Trocador de Idioma -->
+            <li class="nav-item dropdown me-3">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {% bs_icon 'globe' %}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                {% get_current_language as LANGUAGE_CODE %}
+                {% get_available_languages as LANGUAGES %}
+                {% get_language_info_list for LANGUAGES as languages %}
+                {% for language in languages %}
+                  <li>
+                    <form action="{% url 'set_language' %}" method="post">
+                      {% csrf_token %}
+                      <input name="next" type="hidden" value="{{ redirect_to }}">
+                      <input name="language" type="hidden" value="{{ language.code }}">
+                      <button type="submit" class="dropdown-item {% if language.code == LANGUAGE_CODE %}active{% endif %}">
+                        {{ language.name_local }} ({{ language.code }})
+                      </button>
+                    </form>
+                  </li>
+                {% endfor %}
+              </ul>
+            </li>
+
+            <!-- Alternador de Modo Escuro -->
             <li class="nav-item me-3">
               <button class="btn btn-link nav-link" id="darkModeToggle">
-                <i class="bi bi-moon-fill" id="themeIcon"></i>
+                <span id="icon-moon">{% bs_icon 'moon-fill' %}</span>
+                <span id="icon-sun">{% bs_icon 'sun-fill' %}</span>
               </button>
             </li>
 
-            <!-- Notifications -->
+            <!-- Notificações -->
             <li class="nav-item me-3">
               <a class="nav-link" href="#">
-                <i class="bi bi-bell"></i>
+                {% bs_icon 'bell' %}
               </a>
             </li>
 
-            <!-- User Profile -->
+            <!-- Perfil do Usuário -->
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle d-flex align-items-center"
                  href="#"
@@ -94,23 +144,60 @@
                  data-bs-toggle="dropdown"
                  aria-expanded="false">
                 <div class="avatar-placeholder me-2">{{ user.email|make_list|first|upper }}</div>
-                <span>{{ user.email }}</span>
+                <div class="d-flex flex-column align-items-start">
+                  <span>{{ user.email }}</span>
+                  <div id="session-timer" class="text-muted" style="font-size: 0.65rem; line-height: 1;"></div>
+                </div>
               </a>
               <ul class="dropdown-menu dropdown-menu-end">
+                <!-- Informações do Usuário -->
                 <li>
-                  <a class="dropdown-item" href="#">Perfil</a>
+                  <h6 class="dropdown-header text-center">
+                    {% if user.is_superuser %}
+                      {% trans "Superuser" %}
+                    {% elif user.is_staff %}
+                      {% trans "Equipe" %}
+                    {% elif user.groups.exists %}
+                      {{ user.groups.first.name }}
+                    {% else %}
+                      {% trans "Usuário" %}
+                    {% endif %}
+                  </h6>
                 </li>
+                <li><hr class="dropdown-divider" /></li>
+
+                <!-- Perfil do Usuário -->
                 <li>
-                  <a class="dropdown-item" href="#">Configurações</a>
+                  <a class="dropdown-item" href="#">
+                    {% bs_icon 'person' extra_classes='mb-1' %}
+                    {% trans "Perfil" %}
+                  </a>
                 </li>
+
+                <!-- Configurações -->
                 <li>
-                  <hr class="dropdown-divider" />
+                  <a class="dropdown-item {% if request.resolver_match.url_name == 'settings' %}active{% endif %}" href="{% url 'settings' %}">
+                    {% bs_icon 'gear' extra_classes='mb-1' %}
+                    {% trans "Configurações" %}
+                  </a>
                 </li>
+                <li><hr class="dropdown-divider" /></li>
+
+                <!-- Último Login -->
                 <li>
-                  <form action="{% url 'logout' %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="dropdown-item text-danger">Sair</button>
-                  </form>
+                  <span class="dropdown-item-text text-muted text-center" style="font-size: 0.75rem;">
+                    {% trans "Último login" %}:<br>
+                    {{ user.last_login|date:"d/m/Y H:i" }}
+                  </span>
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+
+                <!-- Sair -->
+                <li>
+                  <button type="button" class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                    {% bs_icon 'box-arrow-right' extra_classes='mb-1' %}
+                    {% trans "Sair" %}
+                  </button>
                 </li>
               </ul>
             </li>
@@ -123,32 +210,51 @@
     
     <div class="wrapper">
 
-      <!-- Sidebar -->
+      <!-- Barra Lateral -->
       <nav id="sidebar" class="bg-body-tertiary border-end">
         <div class="p-3">
           <ul class="list-unstyled components">
             <li class="mb-2">
               <a href="{% url 'dashboard' %}"
-                 class="nav-link active px-3 py-2 rounded"> <i class="bi bi-grid me-2"></i> Dashboard </a>
+                 class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %} px-3 py-2 rounded"> 
+                 {% bs_icon 'grid' extra_classes='me-2' %} {% trans "Dashboard" %} 
+              </a>
             </li>
             <li class="mb-2">
-              <a href="#" class="nav-link px-3 py-2 rounded"> <i class="bi bi-truck me-2"></i> Frotas </a>
+              <a href="#" class="nav-link px-3 py-2 rounded"> 
+                {% bs_icon 'truck' extra_classes='me-2' %} {% trans "Frotas" %} 
+              </a>
             </li>
             <li class="mb-2">
-              <a href="#" class="nav-link px-3 py-2 rounded"> <i class="bi bi-box-seam me-2"></i> Estoque </a>
+              <a href="#" class="nav-link px-3 py-2 rounded"> 
+                {% bs_icon 'box-seam' extra_classes='me-2' %} {% trans "Estoque" %} 
+              </a>
             </li>
             <li class="mb-2">
-              <a href="#" class="nav-link px-3 py-2 rounded"> <i class="bi bi-map me-2"></i> Logística </a>
+              <a href="#" class="nav-link px-3 py-2 rounded"> 
+                {% bs_icon 'map' extra_classes='me-2' %} {% trans "Logística" %} 
+              </a>
             </li>
             <li class="mb-2">
-              <a href="#" class="nav-link px-3 py-2 rounded"> <i class="bi bi-gear me-2"></i> Configurações </a>
+              <a href="{% url 'settings' %}" class="nav-link {% if request.resolver_match.url_name == 'settings' %}active{% endif %} px-3 py-2 rounded"> 
+                {% bs_icon 'gear' extra_classes='me-2' %} {% trans "Configurações" %} 
+              </a>
             </li>
           </ul>
         </div>
       </nav>
 
-      <!-- Page Content -->
+      <!-- Conteúdo da Página -->
       <main>
+        <!-- Informações de Debug -->
+        {% if user.is_superuser %}
+        <div class="alert alert-info">
+            URL Name: {{ request.resolver_match.url_name }}<br>
+            Path: {{ request.path }}
+        </div>
+        {% endif %}
+
+        <!-- Mensagens -->
         {% if messages %}
           {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show"
@@ -161,30 +267,105 @@
             </div>
           {% endfor %}
         {% endif %}
+
+        <!-- Conteúdo -->
         {% block content %}{% endblock %}
       </main>
 
     </div>
+
+    <!-- Sessão Expirando Modal -->
+    <div class="modal fade" id="sessionTimeoutModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="sessionTimeoutModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="sessionTimeoutModalLabel">
+              {% bs_icon 'exclamation-triangle' extra_classes='mb-1 text-warning' %}
+              {% trans "Sessão Expirando" %}
+            </h5>
+          </div>
+          <div class="modal-body">
+            {% trans "Sua sessão irá expirar em" %} <span id="modal-countdown" class="fw-bold text-danger">20</span> {% trans "segundos. Deseja continuar logado?" %}
+          </div>
+          <div class="modal-footer">
+            <form action="{% url 'logout' %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger">
+                {% bs_icon 'box-arrow-right' extra_classes='mb-1' %}
+                {% trans "Deslogar" %}
+              </button>
+            </form>
+            <button type="button" class="btn btn-primary" onclick="location.reload()">
+              {% bs_icon 'check-circle' extra_classes='mb-1' %}
+              {% trans "Ficar" %}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logout Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="logoutModalLabel">
+              {% bs_icon 'exclamation-triangle' extra_classes='mb-1 text-warning' %}
+              {% trans "Sair" %}
+            </h5>
+          </div>
+          <div class="modal-body">
+            {% trans "Tem certeza que deseja sair?" %}
+          </div>
+          <div class="modal-footer">
+            <form action="{% url 'logout' %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger">
+                {% bs_icon 'box-arrow-right' extra_classes='mb-1' %}
+                {% trans "Sair" %}
+              </button>
+            </form>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              {% bs_icon 'x-circle' extra_classes='mb-1' %}
+              {% trans "Cancelar" %}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
     
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS PIP -->
+    {% bootstrap_javascript %}
+
     <!-- Custom JS -->
     <script>
-      // Sidebar Toggle
-      document.getElementById('sidebarCollapse').addEventListener('click', function () {
-        document.getElementById('sidebar').classList.toggle('active');
+      //────────────────────────────────────────────────────────────────────
+      // Alternador de Barra Lateral
+      //────────────────────────────────────────────────────────────────────
+      const sidebar = document.getElementById('sidebar');
+      const sidebarCollapse = document.getElementById('sidebarCollapse');
+
+      // Verifica o estado salvo no localStorage
+      if (localStorage.getItem('sidebarActive') === 'true') {
+        sidebar.classList.add('active');
+      }
+
+      sidebarCollapse.addEventListener('click', function () {
+        sidebar.classList.toggle('active');
+        // Salva o estado atual no localStorage
+        localStorage.setItem('sidebarActive', sidebar.classList.contains('active'));
       });
 
-      // Dark Mode Logic
+      //────────────────────────────────────────────────────────────────────
+      // Lógica do Modo Escuro
+      //────────────────────────────────────────────────────────────────────
       const darkModeToggle = document.getElementById('darkModeToggle');
-      const themeIcon = document.getElementById('themeIcon');
       const htmlElement = document.documentElement;
 
-      // Check local storage
+      // Verifica o armazenamento local
       const currentTheme = localStorage.getItem('theme');
       if (currentTheme) {
         htmlElement.setAttribute('data-bs-theme', currentTheme);
-        updateIcon(currentTheme);
       }
 
       darkModeToggle.addEventListener('click', () => {
@@ -193,18 +374,72 @@
 
         htmlElement.setAttribute('data-bs-theme', newTheme);
         localStorage.setItem('theme', newTheme);
-        updateIcon(newTheme);
       });
 
-      function updateIcon(theme) {
-        if (theme === 'dark') {
-          themeIcon.classList.remove('bi-moon-fill');
-          themeIcon.classList.add('bi-sun-fill');
-        } else {
-          themeIcon.classList.remove('bi-sun-fill');
-          themeIcon.classList.add('bi-moon-fill');
-        }
-      }
+      //────────────────────────────────────────────────────────────────────
+      // Contagem regressiva da sessão
+      //────────────────────────────────────────────────────────────────────
+      document.addEventListener('DOMContentLoaded', function() {
+          let timeLeft = {{ session_expiry_age|default:0 }};
+          const timerElement = document.getElementById('session-timer');
+          const modalElement = document.getElementById('sessionTimeoutModal');
+          let modalShown = false;
+          let sessionModal = null;
+
+          if (modalElement) {
+             sessionModal = new bootstrap.Modal(modalElement);
+          }
+          
+          if (timerElement) {
+              const formatTime = (seconds) => {
+                  const m = Math.floor(seconds / 60);
+                  const s = seconds % 60;
+                  return `{% trans 'Sessão' %}: ${m}:${s < 10 ? '0' : ''}${s}`;
+              };
+
+              const updateDisplay = () => {
+                  if (timeLeft <= 0) {
+                      timerElement.textContent = "{% trans 'Sessão expirada' %}";
+                      // Redireciona para logout se expirada (via POST)
+                      const form = document.createElement('form');
+                      form.method = 'POST';
+                      form.action = "{% url 'logout' %}";
+                      
+                      const csrf = document.createElement('input');
+                      csrf.type = 'hidden';
+                      csrf.name = 'csrfmiddlewaretoken';
+                      csrf.value = '{{ csrf_token }}';
+                      form.appendChild(csrf);
+                      
+                      document.body.appendChild(form);
+                      form.submit();
+                      return;
+                  }
+                  
+                  // Mostra modal se menos de 20 segundos e não mostrado
+                  if (timeLeft <= 20) {
+                      if (!modalShown && sessionModal) {
+                          sessionModal.show();
+                          modalShown = true;
+                      }
+                      // Atualiza o texto do modal com a contagem regressiva
+                      const modalCountdown = document.getElementById('modal-countdown');
+                      if (modalCountdown) {
+                          modalCountdown.textContent = timeLeft;
+                      }
+                  }
+
+                  timerElement.textContent = formatTime(timeLeft);
+                  timeLeft--;
+              };
+
+              // Atualização inicial
+              updateDisplay();
+              
+              // Contagem regressiva local a cada segundo
+              const countdownInterval = setInterval(updateDisplay, 1000);
+          }
+      });
     </script>
   </body>
 </html>

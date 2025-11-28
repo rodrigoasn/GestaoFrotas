@@ -1,0 +1,34 @@
+{% load static %}
+{% load i18n %}
+{% load django_bootstrap5 %}
+{% load bootstrap_icons %}
+
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}" data-bs-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>
+      {% block title %}{% trans "Gestão de Frotas" %}{% endblock %}
+    </title>
+
+    <!-- Bootstrap 5 PIP -->
+    {% bootstrap_css %}
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    
+    {% block extra_css %}{% endblock %}
+  </head>
+
+  <body>
+    
+    {% block content %}{% endblock %}
+
+    <!-- Bootstrap JS PIP -->
+    {% bootstrap_javascript %}
+    
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>
