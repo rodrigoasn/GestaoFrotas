@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.utils.translation import gettext as _
 from .models import SystemConfiguration
 from .forms import SystemConfigurationForm
+from django.http import JsonResponse
 
 
 # ────────────────────────────────────────────────────────────────────
@@ -17,7 +18,7 @@ class SettingsView(LoginRequiredMixin, View):
     template_name = 'core/settings.html'
 
     def get_object(self):
-        # Ensure only one instance exists
+        # Garante que apenas uma instância exista
         obj, created = SystemConfiguration.objects.get_or_create(pk=1)
         return obj
 

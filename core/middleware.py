@@ -4,6 +4,7 @@
 from django.conf import settings
 from django.contrib.sessions.models import Session
 from django.utils import timezone
+from core.models import SystemConfiguration
 import datetime
 
 
@@ -16,9 +17,8 @@ class SessionTimeoutMiddleware:
 
     def __call__(self, request):
         if request.user.is_authenticated:
-            # Get global timeout from SystemConfiguration
+            # Recupera o timeout global da SystemConfiguration
             try:
-                from core.models import SystemConfiguration
                 config = SystemConfiguration.objects.first()
                 timeout_minutes = config.session_timeout_minutes if config else 30
             except Exception:
