@@ -7,262 +7,66 @@
   {% trans "Login - Gestão de Frotas" %}
 {% endblock title %}
 
+{% block extra_css %}{% endblock extra_css %}
+
 {% block content %}
 
-  <style>
-    /* Reset Main padding */
-    main {
-      padding: 0 !important;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-    }
-
-    /* Target the wrapper for full screen background and centering */
-    .wrapper {
-      background-color: #f0f2f5;
-      /* Clean, professional abstract background (Blue/Grey geometric or blurred) */
-      background-image: url('{% static 'img/bg-login.png' %}');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      display: flex !important;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      width: 100vw;
-      position: fixed; /* Ensure it covers everything */
-      top: 0;
-      left: 0;
-      z-index: 1000; /* Sit on top of everything else */
-    }
-
-    /* Overlay for better text readability on background */
-    .wrapper::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.5); /* Slightly lighter overlay for the new dark background */
-      z-index: -1;
-    }
-
-    .login-card {
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-      overflow: hidden;
-      width: 100%;
-      max-width: 900px;
-      display: flex;
-      min-height: 550px;
-      margin: 20px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .login-banner {
-      flex: 1;
-      /* Professional Logistics/Truck image */
-      background-image: url('{% static 'img/bg-card-login.png' %}');
-      background-size: cover;
-      background-position: center;
-      position: relative;
-      display: none; /* Hidden on mobile */
-    }
-
-    .login-banner::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.8));
-    }
-
-    .banner-content {
-      position: absolute;
-      bottom: 40px;
-      left: 40px;
-      right: 40px;
-      color: white;
-      z-index: 1;
-    }
-
-    .login-form-section {
-      flex: 1;
-      padding: 50px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      position: relative;
-    }
-
-    .brand-logo {
-      font-size: 2rem;
-      font-weight: 800;
-      color: #333;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .form-control {
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #e1e1e1;
-      background-color: #f8f9fa;
-    }
-
-    .form-control:focus {
-      box-shadow: none;
-      border-color: #0d6efd;
-      background-color: white;
-    }
-
-    .input-group-text {
-      background-color: #f8f9fa;
-      border: 1px solid #e1e1e1;
-      border-right: none;
-      border-radius: 8px 0 0 8px;
-    }
-
-    .input-group .form-control {
-      border-left: none;
-      border-radius: 0 8px 8px 0;
-    }
-
-    .form-check-input {
-      background-color: white;
-      border: 1px solid #e1e1e1;
-    }
-
-    .form-check-input:checked {
-      background-color: #0d6efd;
-      border-color: #0d6efd;
-    }
-
-    .btn-login {
-      padding: 12px;
-      font-weight: 600;
-      border-radius: 8px;
-      margin-top: 20px;
-    }
-
-    @media (min-width: 768px) {
-      .login-banner {
-        display: block;
-      }
-    }
-  </style>
-
-  <div class="wrapper">
-    <!-- Card de Login -->
-    <div class="login-card">
-
-      <!-- Banner: Imagem/Imagem -->
-      <div class="login-banner">
-        <div class="banner-content">
-          <h2 class="fw-bold">{% trans "Gestão de Frotas" %}</h2>
-          <p class="mb-0">{% trans "Eficiência e controle para sua operação logística." %}</p>
-        </div>
+  <!-- Formulário de Login -->
+  <form method="post">
+    {% csrf_token %}
+    {% if form.errors %}
+      <div class="alert alert-danger py-2 small">
+        {% bs_icon 'exclamation-circle' extra_classes='me-2' %}{% trans "Credenciais inválidas." %}
       </div>
+    {% endif %}
 
-      <!-- Formulário de Login -->
-      <div class="login-form-section">
-        
-        <!-- Alternador de idioma -->
-        <div class="position-absolute top-0 end-0 m-3">
-          <div class="dropdown">
-            <button class="btn btn-link text-secondary text-decoration-none dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              {% bs_icon 'globe' %}
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end">
-              {% get_current_language as LANGUAGE_CODE %}
-              {% get_available_languages as LANGUAGES %}
-              {% get_language_info_list for LANGUAGES as languages %}
-              {% for language in languages %}
-                <li>
-                  <form action="{% url 'set_language' %}" method="post">
-                    {% csrf_token %}
-                    <input name="next" type="hidden" value="{{ redirect_to }}">
-                    <input name="language" type="hidden" value="{{ language.code }}">
-                    <button type="submit" class="dropdown-item {% if language.code == LANGUAGE_CODE %}active{% endif %}">
-                      {{ language.name_local }} ({{ language.code }})
-                    </button>
-                  </form>
-                </li>
-              {% endfor %}
-            </ul>
-          </div>
-        </div>
-
-        <!-- Logo e Título -->
-        <div class="mb-5">
-          <div class="brand-logo text-primary">
-            {% bs_icon 'truck-front-fill' size='3rem' extra_classes='me-2' %}
-            <span>FROTAS</span>
-          </div>
-          <h4 class="fw-bold text-secondary">{% trans "Bem-vindo(a)" %}</h4>
-          <p class="text-secondary">{% trans "Insira suas credenciais para acessar." %}</p>
-        </div>
-
-        <!-- Formulário de Login -->
-        <form method="post">
-          {% csrf_token %}
-          {% if form.errors %}
-            <div class="alert alert-danger py-2 small">
-              {% bs_icon 'exclamation-circle' extra_classes='me-2' %}{% trans "Credenciais inválidas." %}
-            </div>
-          {% endif %}
-          <div class="mb-3">
-            <label class="form-label small text-secondary fw-bold">{% trans "E-MAIL" %}</label>
-            <div class="input-group">
-              <span class="input-group-text">{% bs_icon 'envelope' extra_classes='text-secondary' %}</span>
-              <input type="email"
-                     name="username"
-                     class="form-control"
-                     placeholder="{% trans "user@example.com" %}"
-                     required
-                     autofocus />
-            </div>
-          </div>
-          <div class="mb-3">
-            <label class="form-label small text-secondary fw-bold">{% trans "SENHA" %}</label>
-            <div class="input-group">
-              <span class="input-group-text">{% bs_icon 'lock' extra_classes='text-secondary' %}</span>
-              <input type="password"
-                     name="password"
-                     class="form-control"
-                     placeholder="••••••••"
-                     required />
-            </div>
-          </div>
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="rememberMe" />
-              <label class="form-check-label small text-secondary" for="rememberMe">{% trans "Lembrar-me" %}</label>
-            </div>
-            <a href="#" class="small text-decoration-none fw-bold">{% trans "Esqueceu a senha?" %}</a>
-          </div>
-          <button type="submit" class="btn btn-primary w-100 btn-login">{% trans "ACESSAR SISTEMA" %}</button>
-          <div class="mt-4 text-center">
-            <p class="small text-secondary mb-0">
-              @ {% now "Y" %} {% trans "Gestão de Frotas" %}.
-              <br />
-              <a href="#" class="text-secondary text-decoration-underline">{% trans "Termos de Uso" %}</a> *
-              <a href="#" class="text-secondary text-decoration-underline">{% trans "Privacidade" %}</a>
-            </p>
-          </div>
-        </form>
-
+    <div class="mb-3">
+      <label class="form-label small text-secondary fw-bold">{% trans "E-MAIL" %}</label>
+      <div class="input-group">
+        <span class="input-group-text">{% bs_icon 'envelope' extra_classes='text-secondary' %}</span>
+        <input type="email" name="username" class="form-control" placeholder="{% trans "user@example.com" %}" required autofocus />
       </div>
     </div>
-  </div>
+
+    <div class="mb-3">
+      <label class="form-label small text-secondary fw-bold">{% trans "SENHA" %}</label>
+      <div class="input-group">
+        <span class="input-group-text">{% bs_icon 'lock' extra_classes='text-secondary' %}</span>
+        <input type="password" name="password" class="form-control" placeholder="••••••••" required id="id_password"/>
+        <button class="btn btn-outline-white" type="button" id="togglePassword" style="border-left: none; border-color: #e1e1e1; background-color: #f8f9fa;">
+          <span id="icon-eye">{% bs_icon 'eye' %}</span>
+          <span id="icon-eye-slash" class="d-none">{% bs_icon 'eye-slash' %}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="rememberMe" />
+        <label class="form-check-label small text-secondary" for="rememberMe">{% trans "Lembrar-me" %}</label>
+      </div>
+      <a href="#" class="small text-decoration-none fw-bold">{% trans "Esqueceu a senha?" %}</a>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100 btn-login">{% trans "ACESSAR SISTEMA" %}</button>
+  </form>
   
 {% endblock content %}
+
+{% block extra_js %}
+
+  <script>
+    document.getElementById('togglePassword').addEventListener('click', function (e) {
+      const password = document.getElementById('id_password');
+      const iconEye = document.getElementById('icon-eye');
+      const iconEyeSlash = document.getElementById('icon-eye-slash');
+
+      const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+      password.setAttribute('type', type);
+      
+      iconEye.classList.toggle('d-none');
+      iconEyeSlash.classList.toggle('d-none');
+    });
+  </script>
+  
+{% endblock extra_js %}

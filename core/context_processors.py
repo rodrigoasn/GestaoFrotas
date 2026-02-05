@@ -1,6 +1,7 @@
 # ────────────────────────────────────────────────────────────────────
 # IMPORTS
 # ────────────────────────────────────────────────────────────────────
+from .models import SystemConfiguration
 
 
 # ────────────────────────────────────────────────────────────────────
@@ -12,3 +13,12 @@ def session_expiry(request):
             'session_expiry_age': request.session.get_expiry_age(),
         }
     return {}
+
+
+# ────────────────────────────────────────────────────────────────────
+# SYSTEM CONFIGURATION
+# ────────────────────────────────────────────────────────────────────
+def system_configuration(request):
+    return {
+        'system_configuration': SystemConfiguration.objects.first()
+    }

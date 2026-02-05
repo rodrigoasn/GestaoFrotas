@@ -9,6 +9,21 @@ from django.utils.translation import gettext as _
 from .models import SystemConfiguration
 from .forms import SystemConfigurationForm
 from django.http import JsonResponse
+from django.views.decorators.cache import cache_control
+from django.views.generic import TemplateView
+from django.utils.decorators import method_decorator
+
+
+# ────────────────────────────────────────────────────────────────────
+# VIEW: SERVICE WORKER
+# ────────────────────────────────────────────────────────────────────
+@method_decorator(cache_control(max_age=60 * 60 * 24, immutable=True, public=True), name='dispatch')
+class ServiceWorkerView(TemplateView):
+    template_name = 'service-worker.js'
+
+    def render_to_response(self, context, **response_kwargs):
+        response_kwargs['content_type'] = 'application/javascript'
+        return super().render_to_response(context, **response_kwargs)
 
 
 # ────────────────────────────────────────────────────────────────────
@@ -29,7 +44,7 @@ class SettingsView(LoginRequiredMixin, View):
 
     def post(self, request):
         config = self.get_object()
-        form = SystemConfigurationForm(request.POST, instance=config)
+        form = SystemConfigurationForm(request.POST, request.FILES, instance=config)
         if form.is_valid():
             form.save()
             messages.success(request, _('Configurações atualizadas com sucesso!'))
@@ -37,3 +52,5 @@ class SettingsView(LoginRequiredMixin, View):
         
         messages.error(request, _('Erro ao atualizar configurações.'))
         return render(request, self.template_name, {'form': form})
+
+

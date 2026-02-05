@@ -4,31 +4,417 @@
 {% load bootstrap_icons %}
 
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}" data-bs-theme="light">
+
+<html lang="{{ LANGUAGE_CODE|default:'pt-br' }}" data-bs-theme="light">
+
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:image" content="{% static 'img/icons/apple-touch-icon-180x180.png' %}" />
 
     <title>
-      {% block title %}{% trans "Gestão de Frotas" %}{% endblock %}
+      {% block title %}{% endblock %}
     </title>
+
+    {% if system_configuration.image_favicon %}
+        <link rel="shortcut icon" type="image/png" href="{{ system_configuration.image_favicon.url }}"/>
+    {% endif %}
 
     <!-- Bootstrap 5 PIP -->
     {% bootstrap_css %}
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-    
+    <style>
+      /* Reset Main padding */
+      main {
+        padding: 0 !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+      }
+
+      a {
+        text-decoration: none;
+        color: #0d6efd;
+      }
+
+      a:hover {
+        text-decoration: underline;
+        color: #0d6efd;
+      }
+
+      a:active {
+        text-decoration: underline;
+        color: #0d6efd;
+      }
+      
+      /* Target the wrapper for full screen background and centering */
+      .wrapper {
+        background-color: #f0f2f5;
+        /* Clean, professional abstract background (Blue/Grey geometric or blurred) */
+        {% if system_configuration.image_background %}
+          background-image: url('{{ system_configuration.image_background.url }}');
+        {% else %}
+          background-image: url('{% static 'img/bg-login.png' %}');
+        {% endif %}
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        width: 100vw;
+        position: fixed; /* Ensure it covers everything */
+        top: 0;
+        left: 0;
+        z-index: 1000; /* Sit on top of everything else */
+      }
+
+      /* Overlay for better text readability on background */
+      .wrapper::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5); /* Slightly lighter overlay for the new dark background */
+        z-index: -1;
+      }
+
+      .login-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        width: 100%;
+        max-width: 900px;
+        display: flex;
+        min-height: 550px;
+        margin: 20px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .login-banner {
+        flex: 1;
+        /* Professional Logistics/Truck image */
+        {% if system_configuration.image_login_banner %}
+          background-image: url('{{ system_configuration.image_login_banner.url }}');
+        {% else %}
+          background-image: url('{% static 'img/bg-card-login.png' %}');
+        {% endif %}
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        display: none; /* Hidden on mobile */
+      }
+
+      .login-banner::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.8));
+      }
+
+      .banner-content {
+        position: absolute;
+        bottom: 40px;
+        left: 40px;
+        right: 40px;
+        color: white;
+        z-index: 1;
+      }
+
+      .login-form-section {
+        flex: 1;
+        padding: 50px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+      }
+
+      .brand-logo {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #333;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .form-control {
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #e1e1e1;
+        background-color: #f8f9fa;
+      }
+
+      .form-control:focus {
+        box-shadow: none;
+        border-color: #0d6efd;
+        background-color: white;
+      }
+
+      .input-group-text {
+        background-color: #f8f9fa;
+        border: 1px solid #e1e1e1;
+        border-right: none;
+        border-radius: 8px 0 0 8px;
+      }
+
+      .input-group .form-control {
+        border-left: none;
+        border-radius: 0 8px 8px 0;
+      }
+
+      .form-check-input {
+        background-color: white;
+        border: 1px solid #e1e1e1;
+      }
+
+      .form-check-input:checked {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+      }
+
+      .btn-login {
+        padding: 12px;
+        font-weight: 600;
+        border-radius: 8px;
+        margin-top: 20px;
+      }
+
+      @media (min-width: 768px) {
+        .login-banner {
+          display: block;
+        }
+      }
+    </style>
+
     {% block extra_css %}{% endblock %}
+
+    <!-- PWA -->
+    <link rel="manifest" href="{% static 'json/manifest.json' %}">
+    <link rel="apple-touch-icon" href="{% static 'img/icons/apple-touch-icon.png' %}" />
+    <link rel="apple-touch-icon" sizes="57x57" href="{% static 'img/icons/apple-touch-icon-57x57.png' %}" />
+    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'img/icons/apple-touch-icon-72x72.png' %}" />
+    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'img/icons/apple-touch-icon-76x76.png' %}" />
+    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'img/icons/apple-touch-icon-114x114.png' %}" />
+    <link rel="apple-touch-icon" sizes="120x120" href="{% static 'img/icons/apple-touch-icon-120x120.png' %}" />
+    <link rel="apple-touch-icon" sizes="144x144" href="{% static 'img/icons/apple-touch-icon-144x144.png' %}" />
+    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'img/icons/apple-touch-icon-152x152.png' %}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/icons/apple-touch-icon-180x180.png' %}" />
+    
+    <!-- Service Worker e PWA Logic -->
+    <script>
+      // Register Service Worker
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register("{% url 'service_worker' %}")
+        .then(function(registration) {
+          console.log('Service Worker registered with scope:', registration.scope);
+        }).catch(function(err) {
+          console.log('Service Worker registration failed:', err);
+        });
+      }
+
+      // PWA Install Prompt
+      let deferredPrompt;
+      const installButton = document.getElementById('installButton');
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent the mini-infobar from appearing on mobile
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        deferredPrompt = e;
+        
+        // Update UI notify the user they can install the PWA
+        // Check if the button exists (it might be in the body which isn't fully loaded yet if this script runs too early? 
+        // No, script is in head but defer/async usually better. 
+        // Ideally this should be in DOMContentLoaded, but let's try assuming the button will be found or use event delegation logic if needed. 
+        // Actually, we should put this inside DOMContentLoaded or make sure elements exist.
+        // Since this script is in <head>, elements don't exist yet. We must wrap in DOMContentLoaded.
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+         const btn = document.getElementById('installButton');
+         if (!btn) return; // Button not found (maybe not on login page?)
+
+         window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e; // Save event
+            btn.style.display = 'block'; // Show button
+         });
+
+         btn.addEventListener('click', () => {
+            // Hide the app provided install promotion
+            btn.style.display = 'none';
+            // Show the install prompt
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                // Wait for the user to respond to the prompt
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the A2HS prompt');
+                    } else {
+                        console.log('User dismissed the A2HS prompt');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+         });
+      });
+    </script>
   </head>
 
   <body>
     
-    {% block content %}{% endblock %}
+    <div class="wrapper">
+
+      <!-- Card -->
+      <div class="login-card">
+
+        <!-- Banner: Imagem/Imagem -->
+        <div class="login-banner">
+          <div class="banner-content">
+            <h2 class="fw-bold">{% trans "Gestão de Frotas" %}</h2>
+            <p class="mb-0">{% trans "Eficiência e controle para sua operação logística." %}</p>
+          </div>
+        </div>
+
+        <!-- Formulários -->
+        <div class="login-form-section pt-2">
+
+          <!-- Barra de botões -->
+          <ul class="nav justify-content-end mb-4">
+            
+            <!-- Instalar PWA -->
+            <li class="nav-item" title="{% trans "Instalar Aplicativo" %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+              <button id="installButton" class="btn btn-link text-secondary text-decoration-none" type="button" style="display: none;">
+                {% bs_icon 'phone' %}
+              </button>
+            </li>
+
+            <!-- Alternador de idioma -->
+            <li class="nav-item" title="{% trans "Alterar Idioma" %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+              <div class="dropdown">
+                <button class="btn btn-link text-secondary text-decoration-none dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  {% bs_icon 'globe' %}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  {% get_current_language as LANGUAGE_CODE %}
+                  {% get_available_languages as LANGUAGES %}
+                  {% get_language_info_list for LANGUAGES as languages %}
+                  {% for language in languages %}
+                    <li>
+                      <form action="{% url 'set_language' %}" method="post">
+                        {% csrf_token %}
+                        <input name="next" type="hidden" value="{{ redirect_to }}">
+                        <input name="language" type="hidden" value="{{ language.code }}">
+                        <button type="submit" class="dropdown-item {% if language.code == LANGUAGE_CODE %}active{% endif %}">
+                          {{ language.name_local }} ({{ language.code }})
+                        </button>
+                      </form>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </li>
+
+          </ul>
+
+          <!-- Logo e Título -->
+          <div class="mb-2">
+            <div class="brand-logo text-primary">
+              {% if system_configuration.image_logo %}
+                <img src="{{ system_configuration.image_logo.url }}" alt="Logo" style="max-height: 50px; max-width: 100%;">
+              {% else %}
+                {% bs_icon 'truck-front-fill' size='3rem' extra_classes='me-2' %}
+                <span>FROTAS</span>
+              {% endif %}
+            </div>
+            <h4 class="fw-bold text-secondary">{% trans "Bem-vindo(a)" %}</h4>
+            <p class="text-secondary">{% trans "Insira suas credenciais para acessar." %}</p>
+          </div>
+
+          <!-- Conteúdo -->
+          {% block content %}{% endblock %}
+
+          <!-- Rodapé -->
+          <div class="mt-4 text-center">
+            <p class="small text-secondary mb-0">
+              @ {% now "Y" %} {% trans "Gestão de Frotas" %}.
+              <br />
+              <a href="#" data-bs-toggle="modal" data-bs-target="#termsOfUseModal" class="text-secondary text-decoration-underline">
+                {% trans "Termos de Uso" %}
+              </a> *
+              <a href="#" data-bs-toggle="modal" data-bs-target="#privacyPolicyModal" class="text-secondary text-decoration-underline">
+                {% trans "Política de Privacidade" %}
+              </a>
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- MODAL POLÍTICA DE PRIVACIDADE -->
+    <div class="modal fade" id="privacyPolicyModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="privacyPolicyModalTlt"><i class="fa-solid fa-file-shield"></i> {% trans 'Política de Privacidade' %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            {% comment %} {{ politica.titulo|safe }}
+            {{ politica.politica|safe }} {% endcomment %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <i class="fa-solid fa-xmark"></i> {% trans 'Close' %}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL TERMOS DE USO -->
+    <div class="modal fade" id="termsOfUseModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="termsOfUseModalTlt"><i class="fa-solid fa-file-shield"></i> {% trans 'Termos de Uso' %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              {% comment %} {{ termo.titulo|safe }}
+              {{ termo.termo|safe }} {% endcomment %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <i class="fa-solid fa-xmark"></i> {% trans 'Close' %}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Bootstrap JS PIP -->
     {% bootstrap_javascript %}
     
+    <!-- Scripts -->
     {% block extra_js %}{% endblock %}
+    
   </body>
+
 </html>

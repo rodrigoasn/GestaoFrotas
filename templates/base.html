@@ -5,77 +5,100 @@
 
 <!DOCTYPE html>
 
-<html lang="{{ LANGUAGE_CODE }}" data-bs-theme="light">
+<html lang="{{ LANGUAGE_CODE|default:'pt-br' }}" data-bs-theme="light">
 
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:image" content="{% static 'img/icons/apple-touch-icon-180x180.png' %}" />
 
     <title>
-      {% block title %}{% trans "Gestão de Frotas" %}{% endblock %}
+      {% block title %}{% endblock %}
     </title>
+
+    {% if system_configuration.image_favicon %}
+        <link rel="shortcut icon" type="image/png" href="{{ system_configuration.image_favicon.url }}"/>
+    {% endif %}
 
     <!-- Bootstrap 5 PIP -->
     {% bootstrap_css %}
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-    
-    <style>
-      body {
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
+    <link rel="stylesheet" href="{% static 'css/style_main.css' %}" />
+
+    {% block extra_css %}{% endblock %}
+
+    <!-- PWA -->
+    <link rel="manifest" href="{% static 'json/manifest.json' %}">
+    <link rel="apple-touch-icon" href="{% static 'img/icons/apple-touch-icon.png' %}" />
+    <link rel="apple-touch-icon" sizes="57x57" href="{% static 'img/icons/apple-touch-icon-57x57.png' %}" />
+    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'img/icons/apple-touch-icon-72x72.png' %}" />
+    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'img/icons/apple-touch-icon-76x76.png' %}" />
+    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'img/icons/apple-touch-icon-114x114.png' %}" />
+    <link rel="apple-touch-icon" sizes="120x120" href="{% static 'img/icons/apple-touch-icon-120x120.png' %}" />
+    <link rel="apple-touch-icon" sizes="144x144" href="{% static 'img/icons/apple-touch-icon-144x144.png' %}" />
+    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'img/icons/apple-touch-icon-152x152.png' %}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/icons/apple-touch-icon-180x180.png' %}" />
+
+    <!-- Service Worker e PWA Logic -->
+    <script>
+      // Register Service Worker
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register("{% url 'service_worker' %}")
+        .then(function(registration) {
+          console.log('Service Worker registered with scope:', registration.scope);
+        }).catch(function(err) {
+          console.log('Service Worker registration failed:', err);
+        });
       }
-      .wrapper {
-        display: flex;
-        flex: 1;
-        width: 100%;
-      }
-      #sidebar {
-        min-width: 250px;
-        max-width: 250px;
-        min-height: 100vh;
-        transition: all 0.3s;
-      }
-      #sidebar.active {
-        margin-left: -250px;
-      }
-      main {
-        width: 100%;
-        padding: 20px;
-      }
-      .avatar-placeholder {
-        width: 32px;
-        height: 32px;
-        background-color: #6c757d;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: bold;
-      }
-      /* Dark Mode Toggle Icons */
-      #icon-sun {
-        display: none;
-      }
-      [data-bs-theme="dark"] #icon-moon {
-        display: none;
-      }
-      [data-bs-theme="dark"] #icon-sun {
-        display: inline-block;
-      }
-      /* Active Link Styling */
-      #sidebar .nav-link.active {
-        background-color: #0d6efd;
-        color: white;
-      }
-      .dropdown-item.active, .dropdown-item:active {
-        background-color: #0d6efd;
-        color: white;
-      }
-    </style>
+
+      // PWA Install Prompt
+      let deferredPrompt;
+      const installButton = document.getElementById('installButton');
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent the mini-infobar from appearing on mobile
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        deferredPrompt = e;
+        
+        // Update UI notify the user they can install the PWA
+        // Check if the button exists (it might be in the body which isn't fully loaded yet if this script runs too early? 
+        // No, script is in head but defer/async usually better. 
+        // Ideally this should be in DOMContentLoaded, but let's try assuming the button will be found or use event delegation logic if needed. 
+        // Actually, we should put this inside DOMContentLoaded or make sure elements exist.
+        // Since this script is in <head>, elements don't exist yet. We must wrap in DOMContentLoaded.
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+         const btn = document.getElementById('installButton');
+         if (!btn) return; // Button not found (maybe not on login page?)
+
+         window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e; // Save event
+            btn.style.display = 'block'; // Show button
+         });
+
+         btn.addEventListener('click', () => {
+            // Hide the app provided install promotion
+            btn.style.display = 'none';
+            // Show the install prompt
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                // Wait for the user to respond to the prompt
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the A2HS prompt');
+                    } else {
+                        console.log('User dismissed the A2HS prompt');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+         });
+      });
+    </script>
   </head>
 
   <body>
@@ -89,8 +112,12 @@
         </button>
 
         <a class="navbar-brand ms-2" href="{% url 'dashboard' %}"> 
-          {% bs_icon 'truck' extra_classes='me-2' %}
-          {% trans "Gestão de Frotas" %} 
+          {% if system_configuration.image_logo %}
+            <img src="{{ system_configuration.image_logo.url }}" alt="Logo" style="max-height: 40px; margin-right: 10px;">
+          {% else %}
+            {% bs_icon 'truck' extra_classes='me-2' %}
+            {% trans "Gestão de Frotas" %} 
+          {% endif %}
         </a>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -119,6 +146,13 @@
                   </li>
                 {% endfor %}
               </ul>
+            </li>
+
+            <!-- Botão de Instalação PWA -->
+            <li class="nav-item me-3">
+              <button id="installButton" class="btn btn-link nav-link" style="display: none;">
+                {% bs_icon 'phone' %}
+              </button>
             </li>
 
             <!-- Alternador de Modo Escuro -->
@@ -257,13 +291,9 @@
         <!-- Mensagens -->
         {% if messages %}
           {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show"
-                 role="alert">
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
               {{ message }}
-              <button type="button"
-                      class="btn-close"
-                      data-bs-dismiss="alert"
-                      aria-label="Close"></button>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
           {% endfor %}
         {% endif %}
@@ -441,5 +471,7 @@
           }
       });
     </script>
+
+    {% block extra_js %}{% endblock %}
   </body>
 </html>
