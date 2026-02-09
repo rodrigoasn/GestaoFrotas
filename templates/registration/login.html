@@ -45,10 +45,13 @@
         <input class="form-check-input" type="checkbox" id="rememberMe" />
         <label class="form-check-label small text-secondary" for="rememberMe">{% trans "Lembrar-me" %}</label>
       </div>
-      <a href="#" class="small text-decoration-none fw-bold">{% trans "Esqueceu a senha?" %}</a>
+      <a href="{% url 'password_reset' %}" class="small text-decoration-none fw-bold">{% trans "Esqueceu a senha?" %}</a>
     </div>
 
-    <button type="submit" class="btn btn-primary w-100 btn-login">{% trans "ACESSAR SISTEMA" %}</button>
+    <button type="submit" class="btn btn-primary w-100 btn-login">
+      {% bs_icon 'box-arrow-in-right' size='1.5rem' extra_classes='me-1' %} 
+      {% trans "Acessar Sistema" %}
+    </button>
   </form>
   
 {% endblock content %}

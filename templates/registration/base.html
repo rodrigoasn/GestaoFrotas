@@ -40,12 +40,12 @@
       }
 
       a:hover {
-        text-decoration: underline;
+        text-decoration: none;
         color: #0d6efd;
       }
 
       a:active {
-        text-decoration: underline;
+        text-decoration: none;
         color: #0d6efd;
       }
       
@@ -62,14 +62,12 @@
         background-position: center;
         background-attachment: fixed;
         display: flex !important;
-        align-items: center;
-        justify-content: center;
         min-height: 100vh;
-        width: 100vw;
-        position: fixed; /* Ensure it covers everything */
-        top: 0;
-        left: 0;
-        z-index: 1000; /* Sit on top of everything else */
+        width: 100%; /* Change to 100% to avoid horizontal scrollbar issues */
+        position: relative; /* Needed for ::before overlay */
+        padding: 20px; /* Espaçamento interno para não colar nas bordas */
+        flex-direction: column; /* Ensure vertical stacking if needed */
+        justify-content: center; /* Center content vertically if space allows */
       }
 
       /* Overlay for better text readability on background */
@@ -93,7 +91,7 @@
         max-width: 900px;
         display: flex;
         min-height: 550px;
-        margin: 20px;
+        margin: auto; /* Centraliza vertical e horizontalmente de forma segura */
         position: relative;
         z-index: 1;
       }
@@ -331,7 +329,7 @@
           </ul>
 
           <!-- Logo e Título -->
-          <div class="mb-2">
+          <div class="mb-2"> 
             <div class="brand-logo text-primary">
               {% if system_configuration.image_logo %}
                 <img src="{{ system_configuration.image_logo.url }}" alt="Logo" style="max-height: 50px; max-width: 100%;">
@@ -341,7 +339,7 @@
               {% endif %}
             </div>
             <h4 class="fw-bold text-secondary">{% trans "Bem-vindo(a)" %}</h4>
-            <p class="text-secondary">{% trans "Insira suas credenciais para acessar." %}</p>
+            <p class="text-secondary">{% trans "Sistema de Gestão de Frotas." %}</p>
           </div>
 
           <!-- Conteúdo -->
