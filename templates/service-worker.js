@@ -1,13 +1,9 @@
 const CACHE_NAME = 'gestaofrotas-cache-v2'; // Mude a versão do cache!
 const urlsToCache = [
-  '/admin/',
-  '/registration/',
-  '/static/css/style_login.css',
   '/static/img/icons/apple-touch-icon-180x180.png',
   '/static/img/icons/apple-touch-icon-152x152.png',
   '/static/img/icons/apple-touch-icon-144x144.png',
   '/static/img/icons/apple-touch-icon-120x120.png',
-  // Adicione aqui outros assets estáticos importantes (CSS/JS do Jazzmin, etc.)
 ];
 
 self.addEventListener('install', (event) => {

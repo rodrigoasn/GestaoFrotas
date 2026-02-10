@@ -32,11 +32,11 @@ class SystemConfigurationForm(forms.ModelForm):
             'image_background': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
             
             # Company Info
-            'cnpj': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '00.000.000/0000-00'}),
+            'cnpj': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '00.000.000/0000-00', 'data-masks': 'cnpj'}),
             'inscricao_estadual': forms.TextInput(attrs={'class': 'form-control'}),
             'razao_social': forms.TextInput(attrs={'class': 'form-control'}),
             'nome_fantasia': forms.TextInput(attrs={'class': 'form-control'}),
-            'cep': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '00000-000'}),
+            'cep': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '00000-000', 'data-masks': 'cep'}),
             'endereco': forms.TextInput(attrs={'class': 'form-control'}),
             'numero': forms.TextInput(attrs={'class': 'form-control'}),
             'complemento': forms.TextInput(attrs={'class': 'form-control'}),
@@ -46,8 +46,8 @@ class SystemConfigurationForm(forms.ModelForm):
             
             # Contact
             'email_principal': forms.EmailInput(attrs={'class': 'form-control'}),
-            'telefone_principal': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '(00) 0000-0000'}),
-            'whatsapp': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '(00) 00000-0000'}),
+            'telefone_principal': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '(00) 0000-0000', 'data-masks': 'celular'}),
+            'whatsapp': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '(00) 00000-0000', 'data-masks': 'celular'}),
             
             # Social
             'website': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://'}),

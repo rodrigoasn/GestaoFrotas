@@ -283,7 +283,36 @@
         <div class="login-banner">
           <div class="banner-content">
             <h2 class="fw-bold">{% trans "Gestão de Frotas" %}</h2>
-            <p class="mb-0">{% trans "Eficiência e controle para sua operação logística." %}</p>
+            <p class="mb-3">{% trans "Eficiência e controle para sua operação logística." %}</p>
+            
+            <!-- Redes Sociais -->
+            <div class="social-links mt-4">
+              {% if system_configuration.instagram %}
+                <a href="{{ system_configuration.instagram }}" target="_blank" class="text-white me-3" title="Instagram">
+                  {% bs_icon 'instagram' size='1.5rem' %}
+                </a>
+              {% endif %}
+              {% if system_configuration.facebook %}
+                <a href="{{ system_configuration.facebook }}" target="_blank" class="text-white me-3" title="Facebook">
+                  {% bs_icon 'facebook' size='1.5rem' %}
+                </a>
+              {% endif %}
+              {% if system_configuration.twitter %}
+                <a href="{{ system_configuration.twitter }}" target="_blank" class="text-white me-3" title="Twitter/X">
+                  {% bs_icon 'twitter-x' size='1.5rem' %}
+                </a>
+              {% endif %}
+              {% if system_configuration.linkedin %}
+                <a href="{{ system_configuration.linkedin }}" target="_blank" class="text-white me-3" title="LinkedIn">
+                  {% bs_icon 'linkedin' size='1.5rem' %}
+                </a>
+              {% endif %}
+              {% if system_configuration.youtube %}
+                <a href="{{ system_configuration.youtube }}" target="_blank" class="text-white me-3" title="YouTube">
+                  {% bs_icon 'youtube' size='1.5rem' %}
+                </a>
+              {% endif %}
+            </div>
           </div>
         </div>
 
@@ -293,6 +322,15 @@
           <!-- Barra de botões -->
           <ul class="nav justify-content-end mb-4">
             
+            <!-- Website Link -->
+            {% if system_configuration.website %}
+              <li class="nav-item" title="{% trans "Visite nosso site" %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                <a href="{{ system_configuration.website }}" target="_blank" class="btn btn-link text-secondary text-decoration-none">
+                  {% bs_icon 'house' %}
+                </a>
+              </li>
+            {% endif %}
+
             <!-- Instalar PWA -->
             <li class="nav-item" title="{% trans "Instalar Aplicativo" %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
               <button id="installButton" class="btn btn-link text-secondary text-decoration-none" type="button" style="display: none;">
@@ -347,6 +385,8 @@
 
           <!-- Rodapé -->
           <div class="mt-4 text-center">
+            
+
             <p class="small text-secondary mb-0">
               @ {% now "Y" %} {% trans "Gestão de Frotas" %}.
               <br />
@@ -411,6 +451,14 @@
     {% bootstrap_javascript %}
     
     <!-- Scripts -->
+    <script>
+       // Inicializa Tooltips do Bootstrap (Necessário para BS5)
+       var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+       var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+         return new bootstrap.Tooltip(tooltipTriggerEl)
+       })
+    </script>
+
     {% block extra_js %}{% endblock %}
     
   </body>

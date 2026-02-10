@@ -23,10 +23,11 @@
             </h6>
           </div>
           <div class="card-body">
+
             <form method="post" enctype="multipart/form-data">
               {% csrf_token %}
               
-              {% comment %} DADOS DA EMPRESA {% endcomment %}
+              <!-- DADOS DA EMPRESA -->
               <h6 class="font-weight-bold text-primary mb-3 mt-4">
                 {% bs_icon 'building' extra_classes='me-1' size='16px' %}
                 {% trans "Dados da Empresa" %}
@@ -35,7 +36,13 @@
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label class="form-label">{{ form.cnpj.label }}</label>
-                  {{ form.cnpj }}
+                  <div class="input-group">
+                      {{ form.cnpj }}
+                      <button class="btn btn-outline-primary" type="button" id="btn-buscar-cnpj" title="{% trans 'Consultar dados na Receita Federal' %}" data-bs-toggle="tooltip" data-bs-placement="top">
+                          {% bs_icon 'search' %}
+                      </button>
+                  </div>
+                  <div id="cnpj-feedback" class="form-text mt-1"></div>
                 </div>
                 <div class="col-md-6 mb-3">
                   <label class="form-label">{{ form.inscricao_estadual.label }}</label>
@@ -53,7 +60,7 @@
 
               <hr class="my-4">
 
-              {% comment %} ENDEREÇO {% endcomment %}
+              <!-- ENDEREÇO -->
               <h6 class="font-weight-bold text-primary mb-3">
                 {% bs_icon 'geo-alt' extra_classes='me-1' size='16px' %}
                 {% trans "Endereço" %}
@@ -64,7 +71,7 @@
                   <label class="form-label">{{ form.cep.label }}</label>
                   <div class="input-group">
                       {{ form.cep }}
-                      <button class="btn btn-outline-secondary" type="button" id="btn-buscar-cep">
+                      <button class="btn btn-outline-primary" type="button" id="btn-buscar-cep" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Consultar dados do CEP' %}">
                           {% bs_icon 'search' %}
                       </button>
                   </div>
@@ -97,7 +104,7 @@
 
               <hr class="my-4">
 
-              {% comment %} CONTATO {% endcomment %}
+              <!-- CONTATO -->
               <h6 class="font-weight-bold text-primary mb-3">
                 {% bs_icon 'telephone' extra_classes='me-1' size='16px' %}
                 {% trans "Contato" %}
@@ -120,7 +127,7 @@
 
               <hr class="my-4">
 
-              {% comment %} REDES SOCIAIS {% endcomment %}
+              <!-- REDES SOCIAIS -->
               <h6 class="font-weight-bold text-primary mb-3">
                 {% bs_icon 'share' extra_classes='me-1' size='16px' %}
                 {% trans "Redes Sociais" %}
@@ -155,7 +162,7 @@
 
               <hr class="my-4">
 
-              {% comment %} PERSONALIZAÇÃO {% endcomment %}
+              <!-- PERSONALIZAÇÃO -->
               <h6 class="font-weight-bold text-primary mb-3">
                 {% bs_icon 'palette' extra_classes='me-1' size='16px' %}
                 {% trans "Personalização" %}
@@ -265,7 +272,7 @@
 
                <hr class="my-4">
               
-              {% comment %} SESSÃO {% endcomment %}
+              <!-- SESSÃO -->
               <h6 class="font-weight-bold text-primary mb-3">
                 {% bs_icon 'clock' extra_classes='me-1' size='16px' %}
                 {% trans "Sessão" %}
@@ -285,6 +292,7 @@
                 {% trans "Salvar Configurações" %}
               </button>
             </form>
+            
           </div>
         </div>
       </div>
@@ -294,9 +302,12 @@
 
 {% block extra_js %}
 <script>
+  // ────────────────────────────────────────────────────────────────────
+  // Função para pré-visualização de imagem (antiga)
+  // ────────────────────────────────────────────────────────────────────
   function previewImage(input, previewId) {
     const preview = document.getElementById(previewId);
-    const placeholderId = previewId.replace('preview_', 'placeholder_'); // Assuming naming convention
+    const placeholderId = previewId.replace('preview_', 'placeholder_'); 
     const placeholder = document.getElementById(placeholderId);
     
     if (input.files && input.files[0]) {
@@ -312,17 +323,71 @@
     }
   }
 
-  document.getElementById('{{ form.image_logo.id_for_label }}').addEventListener('change', function() {
-    previewImage(this, 'preview_image_logo');
+  // Event Listeners para imagens (antigo)
+  $(function () {
+    $('{{ form.image_logo.id_for_label }}').on('change', function() {
+      previewImage(this, 'preview_image_logo');
+    });
+    $('{{ form.image_login_banner.id_for_label }}').on('change', function() {
+      previewImage(this, 'preview_image_login_banner');
+    });
+    $('{{ form.image_background.id_for_label }}').on('change', function() {
+      previewImage(this, 'preview_image_background');
+    });
+    $('{{ form.image_favicon.id_for_label }}').on('change', function() {
+      previewImage(this, 'preview_image_favicon');
+    });
   });
-  document.getElementById('{{ form.image_login_banner.id_for_label }}').addEventListener('change', function() {
-    previewImage(this, 'preview_image_login_banner');
-  });
-  document.getElementById('{{ form.image_background.id_for_label }}').addEventListener('change', function() {
-    previewImage(this, 'preview_image_background');
-  });
-  document.getElementById('{{ form.image_favicon.id_for_label }}').addEventListener('change', function() {
-    previewImage(this, 'preview_image_favicon');
+
+  // ────────────────────────────────────────────────────────────────────
+  // SCRIPTS DE CONSULTA DE CNPJ E CEP (Global)
+  // ────────────────────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', function() {
+      initCNPJSearch({
+          btnId: 'btn-buscar-cnpj',
+          inputId: '{{ form.cnpj.id_for_label }}',
+          apiUrlPattern: "{% url 'api_cnpj_search' '00000000000000' %}",
+          fieldsMap: {
+              razao_social: '{{ form.razao_social.id_for_label }}',
+              nome_fantasia: '{{ form.nome_fantasia.id_for_label }}',
+              endereco_cep: '{{ form.cep.id_for_label }}',
+              endereco_logradouro: '{{ form.endereco.id_for_label }}',
+              endereco_numero: '{{ form.numero.id_for_label }}',
+              endereco_complemento: '{{ form.complemento.id_for_label }}',
+              endereco_bairro: '{{ form.bairro.id_for_label }}',
+              endereco_cidade: '{{ form.cidade.id_for_label }}',
+              endereco_estado: '{{ form.estado.id_for_label }}',
+              email_root: '{{ form.email_principal.id_for_label }}',
+              telefone_contato_principal: '{{ form.telefone_principal.id_for_label }}',
+              whatsapp: '{{ form.whatsapp.id_for_label }}'
+          },
+          messages: {
+              invalidCNPJ: '{% trans "Por favor, digite um CNPJ válido com 14 dígitos."|escapejs %}',
+              searching: '{% trans "Consultando Receita Federal..."|escapejs %}',
+              success: '{% trans "Dados encontrados com sucesso!"|escapejs %}',
+              errorDefault: '{% trans "Erro ao consultar CNPJ."|escapejs %}'
+          }
+      });
+
+      // Inicializa Busca de CEP
+      initCEPSearch({
+          btnId: 'btn-buscar-cep',
+          inputId: '{{ form.cep.id_for_label }}',
+          apiUrlPattern: "{% url 'api_cep_search' '00000000' %}",
+          fieldsMap: {
+              endereco_logradouro: '{{ form.endereco.id_for_label }}',
+              endereco_bairro: '{{ form.bairro.id_for_label }}',
+              endereco_cidade: '{{ form.cidade.id_for_label }}',
+              endereco_estado: '{{ form.estado.id_for_label }}',
+              endereco_complemento: '{{ form.complemento.id_for_label }}'
+          },
+          messages: {
+              invalidCEP: '{% trans "Por favor, digite um CEP válido com 8 dígitos."|escapejs %}',
+              searching: '{% trans "Buscando CEP..."|escapejs %}',
+              success: '{% trans "Endereço encontrado!"|escapejs %}',
+              errorDefault: '{% trans "Erro ao buscar CEP."|escapejs %}'
+          }
+      });
   });
 </script>
 {% endblock %}

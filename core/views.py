@@ -12,6 +12,7 @@ from django.http import JsonResponse
 from django.views.decorators.cache import cache_control
 from django.views.generic import TemplateView
 from django.utils.decorators import method_decorator
+from .helpers import buscar_cnpj_receitaws, buscar_cep_viacep
 
 
 # ────────────────────────────────────────────────────────────────────
@@ -54,3 +55,28 @@ class SettingsView(LoginRequiredMixin, View):
         return render(request, self.template_name, {'form': form})
 
 
+
+# ────────────────────────────────────────────────────────────────────
+# VIEW: API CNPJ SEARCH
+# ────────────────────────────────────────────────────────────────────
+class CNPJSearchView(LoginRequiredMixin, View):
+    def get(self, request, cnpj):
+        data = buscar_cnpj_receitaws(cnpj)
+        
+        if "erro" in data:
+            return JsonResponse(data, status=400 if "inválido" in data["erro"].lower() else 500)
+            
+        return JsonResponse(data)
+
+
+# ────────────────────────────────────────────────────────────────────
+# VIEW: API CEP SEARCH
+# ────────────────────────────────────────────────────────────────────
+class CEPSearchView(LoginRequiredMixin, View):
+    def get(self, request, cep):
+        data = buscar_cep_viacep(cep)
+        
+        if "erro" in data:
+            return JsonResponse(data, status=400 if "inválido" in data["erro"].lower() else 500)
+            
+        return JsonResponse(data)

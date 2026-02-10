@@ -125,7 +125,7 @@
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
 
             <!-- Trocador de Idioma -->
-            <li class="nav-item dropdown me-3">
+            <li class="nav-item dropdown me-2">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 {% bs_icon 'globe' %}
               </a>
@@ -152,6 +152,13 @@
             <li class="nav-item me-3">
               <button id="installButton" class="btn btn-link nav-link" style="display: none;">
                 {% bs_icon 'phone' %}
+              </button>
+            </li>
+
+            <!-- Botão de Maximizar/Minimizar -->
+            <li class="nav-item me-3">
+              <button class="btn btn-link nav-link" id="maximizeToggle">
+                {% bs_icon 'arrows-fullscreen' %}
               </button>
             </li>
 
@@ -289,14 +296,16 @@
         {% endif %}
 
         <!-- Mensagens -->
-        {% if messages %}
-          {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-              {{ message }}
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-          {% endfor %}
-        {% endif %}
+        <div id="alert-container">
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        </div>
 
         <!-- Conteúdo -->
         {% block content %}{% endblock %}
@@ -364,6 +373,13 @@
       </div>
     </div>
     
+    <!-- jQuery e jQuery Mask Plugin -->
+    <script src="{% static 'js/vendor/jquery-3.7.1.min.js' %}"></script>
+    <script src="{% static 'js/vendor/jquery.mask.min.js' %}"></script>
+    
+    <!-- Custom Masks -->
+    <script src="{% static 'js/masks.js' %}"></script>
+
     <!-- Bootstrap JS PIP -->
     {% bootstrap_javascript %}
 
@@ -471,6 +487,9 @@
           }
       });
     </script>
+
+    <!-- Main Scripts -->
+    <script src="{% static 'js/main_scripts.js' %}"></script>
 
     {% block extra_js %}{% endblock %}
   </body>
