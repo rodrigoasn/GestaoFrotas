@@ -13,6 +13,7 @@ from .managers import CustomUserManager
 class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(_('endereço de email'), unique=True)
+    avatar = models.ImageField(_('avatar'), upload_to='avatars/', null=True, blank=True, help_text=_("JPG ou PNG. Tamanho máximo de 1MB."))
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

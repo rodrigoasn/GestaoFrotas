@@ -184,7 +184,11 @@
                  role="button"
                  data-bs-toggle="dropdown"
                  aria-expanded="false">
-                <div class="avatar-placeholder me-2">{{ user.email|make_list|first|upper }}</div>
+                {% if user.avatar %}
+                  <img src="{{ user.avatar.url }}" alt="Avatar" class="rounded-circle me-2 border" width="32" height="32" style="object-fit: cover;">
+                {% else %}
+                  <div class="avatar-placeholder me-2">{{ user.email|make_list|first|upper }}</div>
+                {% endif %}
                 <div class="d-flex flex-column align-items-start">
                   <span>{{ user.email }}</span>
                   <div id="session-timer" class="text-muted" style="font-size: 0.65rem; line-height: 1;"></div>
@@ -209,7 +213,7 @@
 
                 <!-- Perfil do Usuário -->
                 <li>
-                  <a class="dropdown-item" href="#">
+                  <a class="dropdown-item" href="{% url 'profile' %}">
                     {% bs_icon 'person' extra_classes='mb-1' %}
                     {% trans "Perfil" %}
                   </a>
@@ -274,6 +278,11 @@
             <li class="mb-2">
               <a href="#" class="nav-link px-3 py-2 rounded"> 
                 {% bs_icon 'map' extra_classes='me-2' %} {% trans "Logística" %} 
+              </a>
+            </li>
+            <li class="mb-2">
+              <a href="{% url 'user_list' %}" class="nav-link {% if 'users' in request.path %}active{% endif %} px-3 py-2 rounded"> 
+                {% bs_icon 'people' extra_classes='me-2' %} {% trans "Usuários" %} 
               </a>
             </li>
             <li class="mb-2">
