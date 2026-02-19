@@ -49,6 +49,11 @@ class UserCreateView(LoginRequiredMixin, AdminStaffRequiredMixin, CreateView):
     template_name = 'accounts/user_form.html'
     success_url = reverse_lazy('user_list')
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request_user'] = self.request.user
+        return kwargs
+
     def form_valid(self, form):
         messages.success(self.request, _('Usuário criado com sucesso!'))
         return super().form_valid(form)

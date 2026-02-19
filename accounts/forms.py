@@ -11,7 +11,17 @@ from .models import CustomUser
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ('email', 'first_name', 'last_name', 'is_staff', 'is_active')
+        fields = ('email', 'first_name', 'last_name', 'is_staff', 'is_superuser', 'is_active')
+
+    def __init__(self, *args, **kwargs):
+        self.request_user = kwargs.pop('request_user', None)
+        super().__init__(*args, **kwargs)
+
+        # Regras de Segurança
+        if self.request_user and not self.request_user.is_superuser:
+            if 'is_staff' in self.fields: del self.fields['is_staff']
+            if 'is_superuser' in self.fields: del self.fields['is_superuser']
+            if 'is_active' in self.fields: del self.fields['is_active']
 
 # ────────────────────────────────────────────────────────────────────
 # USER CHANGE FORMS 
@@ -19,7 +29,7 @@ class CustomUserCreationForm(UserCreationForm):
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
-        fields = ('email', 'first_name', 'last_name', 'avatar', 'is_staff', 'is_active')
+        fields = ('email', 'first_name', 'last_name', 'avatar', 'is_staff', 'is_superuser', 'is_active')
 
     def __init__(self, *args, **kwargs):
         self.request_user = kwargs.pop('request_user', None)
@@ -35,6 +45,7 @@ class CustomUserChangeForm(UserChangeForm):
             # Regra 1: Se não for Superuser, não vê e não edita permissões
             if not self.request_user.is_superuser:
                 if 'is_staff' in self.fields: del self.fields['is_staff']
+                if 'is_superuser' in self.fields: del self.fields['is_superuser']
                 if 'is_active' in self.fields: del self.fields['is_active']
             
             # Regra 2: Se for Superuser, mas estiver editando a si mesmo, não pode alterar suas próprias permissões (evitar lockout)
@@ -42,6 +53,9 @@ class CustomUserChangeForm(UserChangeForm):
                 if 'is_staff' in self.fields: 
                     self.fields['is_staff'].disabled = True
                     self.fields['is_staff'].help_text = "Você não pode remover seu próprio acesso administrativo."
+                if 'is_superuser' in self.fields: 
+                    self.fields['is_superuser'].disabled = True
+                    self.fields['is_superuser'].help_text = "Você não pode remover seu próprio acesso de superusuário."
                 if 'is_active' in self.fields: 
                     self.fields['is_active'].disabled = True
                     self.fields['is_active'].help_text = "Você não pode desativar seu próprio usuário."
