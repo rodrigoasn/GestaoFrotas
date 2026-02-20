@@ -2,13 +2,14 @@
 {% load i18n %}
 {% load bootstrap_icons %}
 
-{% block title %}{% trans "Confirmar Exclusão" %}{% endblock %}
+{% block title %}{% trans "Excluir Grupo" %}{% endblock %}
 
 {% block breadcrumb %}
 <nav class="breadcrumb-wrapper" aria-label="breadcrumb">
   <ol class="breadcrumb mb-0">
     <li class="breadcrumb-item"><a href="{% url 'user_list' %}">{% trans "Usuários" %}</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'user_change' object.pk %}">{{ object.get_full_name|default:object.email }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'group_list' %}">{% trans "Grupos" %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'group_change' object.pk %}">{{ object.name }}</a></li>
     <li class="breadcrumb-item active text-danger" aria-current="page">{% trans "Excluir" %}</li>
   </ol>
 </nav>
@@ -23,13 +24,14 @@
                     <h5 class="mb-0">{% bs_icon 'exclamation-triangle' extra_classes='me-2' %} {% trans "Confirmar Exclusão" %}</h5>
                 </div>
                 <div class="card-body p-4 text-center">
-                    <p class="lead">{% trans "Tem certeza que deseja excluir o usuário" %} <strong>{{ object.email }}</strong>?</p>
-                    <p class="text-muted">{% trans "Esta ação não pode ser desfeita." %}</p>
-                    
+                    <p class="lead">{% trans "Tem certeza que deseja excluir o grupo" %} <strong>{{ object.name }}</strong>?</p>
+                    <p class="text-muted small">
+                        {% trans "Usuários membros deste grupo perderão todas as permissões concedidas por ele." %}
+                    </p>
                     <form method="post">
                         {% csrf_token %}
-                        <div class="d-flex justify-content-center mt-4">
-                            <a href="{% url 'user_list' %}" class="btn btn-secondary me-3">
+                        <div class="d-flex justify-content-center mt-4 gap-3">
+                            <a href="{% url 'group_list' %}" class="btn btn-secondary">
                                 {% bs_icon 'x-lg' extra_classes='me-1' %} {% trans "Cancelar" %}
                             </a>
                             <button type="submit" class="btn btn-danger">

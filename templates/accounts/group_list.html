@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load bootstrap_icons %}
+
+{% block title %}{% trans "Grupos" %}{% endblock %}
+
+{% block breadcrumb %}
+<nav class="breadcrumb-wrapper" aria-label="breadcrumb">
+  <ol class="breadcrumb mb-0">
+    <li class="breadcrumb-item"><a href="{% url 'user_list' %}">{% trans "Usuários" %}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans "Grupos" %}</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+
+    <!-- Cabeçalho -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <!-- Título -->
+        <h2 class="mb-0">
+            {% bs_icon 'people-fill' size='1em' extra_classes='me-2' %}
+            {% trans "Grupos" %}
+        </h2>
+
+        <!-- Botão de adicionar grupo -->
+        {% if user.is_staff or user.is_superuser or perms.auth.add_group %}
+            <a href="{% url 'group_add' %}" class="btn btn-primary">
+                {% bs_icon 'plus-lg' extra_classes='me-1' %} {% trans "Novo Grupo" %}
+            </a>
+        {% endif %}
+
+    </div>
+
+    <!-- Lista de grupos -->
+    {% if groups %}
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-body-tertiary">
+                    <tr>
+                        <th class="ps-4">{% trans "Nome" %}</th>
+                        <th class="text-center">{% trans "Permissões" %}</th>
+                        <th class="text-center">{% trans "Membros" %}</th>
+                        <th class="text-end pe-4">{% trans "Ações" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for group in groups %}
+                    <tr>
+                        <td class="ps-4 fw-semibold">
+                            {% bs_icon 'shield-check' extra_classes='me-2 text-primary' %}
+                            {{ group.name }}
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-secondary rounded-pill">{{ group.permissions_count }}</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-info text-dark rounded-pill">{{ group.members_count }}</span>
+                        </td>
+                        <td class="text-end pe-4">
+                            
+                            <!-- Editar -->
+                            {% if user.is_staff or user.is_superuser %}
+                                <a href="{% url 'group_change' group.pk %}" class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Editar' %}">
+                                    {% bs_icon 'pencil' %}
+                                </a>
+                            {% else %}
+                                <a href="#" class="btn btn-sm btn-outline-secondary me-1" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Editar' %}" disabled>
+                                    {% bs_icon 'pencil' %}
+                                </a>
+                            {% endif %}
+
+                            <!-- Excluir -->
+                            {% if user.is_staff or user.is_superuser %}
+                                <a href="{% url 'group_delete' group.pk %}" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Excluir' %}">
+                                    {% bs_icon 'trash' %}
+                                </a>
+                            {% else %}
+                                <a href="#" class="btn btn-sm btn-outline-secondary me-1" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Excluir' %}" disabled>
+                                    {% bs_icon 'trash' %}
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Estado vazio -->
+    {% else %}
+    <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+            <div class="mb-3 text-muted" style="font-size: 3rem;">
+                {% bs_icon 'people' %}
+            </div>
+            <h5 class="text-muted mb-2">{% trans "Nenhum grupo criado ainda." %}</h5>
+            <p class="text-muted small mb-4">
+                {% trans "Grupos permitem atribuir um conjunto de permissões a múltiplos usuários de uma só vez." %}
+            </p>
+            <a href="{% url 'group_add' %}" class="btn btn-primary">
+                {% bs_icon 'plus-lg' extra_classes='me-1' %} {% trans "Criar Primeiro Grupo" %}
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

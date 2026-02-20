@@ -3,7 +3,10 @@
 # ────────────────────────────────────────────────────────────────────
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.models import Group, Permission
+from django.utils.translation import gettext_lazy as _
 from .models import CustomUser
+
 
 # ────────────────────────────────────────────────────────────────────
 # USER CREATION FORMS 
@@ -22,6 +25,7 @@ class CustomUserCreationForm(UserCreationForm):
             if 'is_staff' in self.fields: del self.fields['is_staff']
             if 'is_superuser' in self.fields: del self.fields['is_superuser']
             if 'is_active' in self.fields: del self.fields['is_active']
+
 
 # ────────────────────────────────────────────────────────────────────
 # USER CHANGE FORMS 
@@ -52,13 +56,14 @@ class CustomUserChangeForm(UserChangeForm):
             elif self.instance == self.request_user:
                 if 'is_staff' in self.fields: 
                     self.fields['is_staff'].disabled = True
-                    self.fields['is_staff'].help_text = "Você não pode remover seu próprio acesso administrativo."
+                    self.fields['is_staff'].help_text = _("Você não pode remover seu próprio acesso administrativo.")
                 if 'is_superuser' in self.fields: 
                     self.fields['is_superuser'].disabled = True
-                    self.fields['is_superuser'].help_text = "Você não pode remover seu próprio acesso de superusuário."
+                    self.fields['is_superuser'].help_text = _("Você não pode remover seu próprio acesso de superusuário.")
                 if 'is_active' in self.fields: 
                     self.fields['is_active'].disabled = True
-                    self.fields['is_active'].help_text = "Você não pode desativar seu próprio usuário."
+                    self.fields['is_active'].help_text = _("Você não pode desativar seu próprio usuário.")
+
 
 # ────────────────────────────────────────────────────────────────────
 # USER PROFILE FORMS 
@@ -72,3 +77,64 @@ class UserProfileForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if 'email' in self.fields:
             self.fields['email'].disabled = True
+
+
+# ────────────────────────────────────────────────────────────────────
+# USER PERMISSIONS FORM
+# ────────────────────────────────────────────────────────────────────
+class UserPermissionsForm(forms.ModelForm):
+    """
+    Formulário para gerenciar grupos e permissões individuais de um usuário,
+    similar ao painel do Django Admin.
+    """
+    groups = forms.ModelMultipleChoiceField(
+        queryset=Group.objects.all().order_by('name'),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label=_('Grupos'),
+        help_text=_('Os grupos aos quais este usuário pertence. O usuário receberá todas as permissões concedidas a cada um dos seus grupos.'),
+    )
+    user_permissions = forms.ModelMultipleChoiceField(
+        # Ordena por app e model para facilitar o agrupamento no template
+        queryset=Permission.objects.select_related('content_type').order_by(
+            'content_type__app_label', 'content_type__model', 'codename'
+        ),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label=_('Permissões do usuário'),
+        help_text=_('Permissões específicas para este usuário, além das concedidas pelos grupos.'),
+    )
+
+    class Meta:
+        model = CustomUser
+        fields = ('groups', 'user_permissions')
+
+
+# ────────────────────────────────────────────────────────────────────
+# GROUP FORM
+# ────────────────────────────────────────────────────────────────────
+class GroupForm(forms.ModelForm):
+    """
+    Formulário para criar e editar Grupos do Django,
+    incluindo seleção de permissões por checkbox.
+    """
+    permissions = forms.ModelMultipleChoiceField(
+        queryset=Permission.objects.select_related('content_type').order_by(
+            'content_type__app_label', 'content_type__model', 'codename'
+        ),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label=_('Permissões'),
+        help_text=_('Selecione as permissões que os membros deste grupo receberão.'),
+    )
+
+    class Meta:
+        model = Group
+        fields = ('name', 'permissions')
+        labels = {
+            'name': _('Nome do grupo'),
+        }
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Ex: Operadores, Supervisores...')}),
+        }
+
