@@ -37,10 +37,23 @@
 
                         {% bootstrap_form form %}
                         
-                        <div class="alert alert-info mt-3" role="alert">
-                            {% bs_icon 'info-circle' extra_classes='me-2' %}
-                            {% trans "Para alterar sua senha ou email, entre em contato com o administrador." %}
+                        <!-- Alterar Senha -->
+                        {% if request.user.is_superuser or request.user.is_staff or perms.accounts.change_customuser %}
+                        <div class="d-flex align-items-center justify-content-between p-3 bg-body-tertiary rounded border">
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="text-warning fs-5">{% bs_icon 'key-fill' %}</span>
+                                <div>
+                                    <div class="fw-semibold small">{% trans "Alterar Senha" %}</div>
+                                    <div class="text-muted" style="font-size:0.75rem">
+                                        {% trans "Redefine a senha de acesso deste usuário." %}
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="{% url 'user_password_change' object.pk %}" class="btn btn-sm btn-outline-warning">
+                                {% bs_icon 'arrow-right' %}
+                            </a>
                         </div>
+                        {% endif %}
 
                         <div class="d-flex justify-content-end mt-4">
                             <button type="submit" class="btn btn-primary">

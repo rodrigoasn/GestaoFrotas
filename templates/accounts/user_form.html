@@ -5,6 +5,20 @@
 
 {% block title %}{% trans "Formulário de Usuário" %}{% endblock %}
 
+{% block breadcrumb %}
+<nav class="breadcrumb-wrapper" aria-label="breadcrumb">
+  <ol class="breadcrumb mb-0">
+    <li class="breadcrumb-item"><a href="{% url 'user_list' %}">{% trans "Usuários" %}</a></li>
+    {% if object %}
+      <li class="breadcrumb-item">{{ object.get_full_name|default:object.email }}</li>
+      <li class="breadcrumb-item active" aria-current="page">{% trans "Editar" %}</li>
+    {% else %}
+      <li class="breadcrumb-item active" aria-current="page">{% trans "Novo Usuário" %}</li>
+    {% endif %}
+  </ol>
+</nav>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-4">
     <div class="row justify-content-center">
@@ -43,16 +57,55 @@
                         {% bootstrap_form form %}
                         
                         {% if object %}
-                        <div class="mb-3 p-3 bg-body-tertiary rounded border">
-                            <label class="form-label fw-bold">{% trans "Segurança" %}</label>
-                            <div class="d-flex align-items-center justify-content-between">
-                                <span class="text-muted small">{% trans "Defina uma nova senha para este usuário." %}</span>
-                                <a href="{% url 'user_password_change' object.pk %}" class="btn btn-sm btn-outline-warning">
-                                    {% bs_icon 'key' extra_classes='me-1' %} {% trans "Alterar Senha" %}
-                                </a>
+                        <!-- ═══ Ações Rápidas ═══════════════════════════════════════ -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold text-muted small text-uppercase">
+                                {% trans "Ações Rápidas" %}
+                            </label>
+                            <div class="d-flex flex-column gap-2">
+
+                                <!-- Alterar Senha -->
+                                {% if request.user.is_superuser or request.user.is_staff or perms.accounts.change_customuser %}
+                                <div class="d-flex align-items-center justify-content-between p-3 bg-body-tertiary rounded border">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <span class="text-warning fs-5">{% bs_icon 'key-fill' %}</span>
+                                        <div>
+                                            <div class="fw-semibold small">{% trans "Alterar Senha" %}</div>
+                                            <div class="text-muted" style="font-size:0.75rem">
+                                                {% trans "Redefine a senha de acesso deste usuário." %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a href="{% url 'user_password_change' object.pk %}" class="btn btn-sm btn-outline-warning">
+                                        {% bs_icon 'arrow-right' %}
+                                    </a>
+                                </div>
+                                {% endif %}
+
+                                <!-- Permissões Avançadas -->
+                                {% if object != request.user and not object.is_superuser %}
+                                    {% if request.user.is_superuser or request.user.is_staff %}
+                                    <div class="d-flex align-items-center justify-content-between p-3 bg-body-tertiary rounded border">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <span class="text-info fs-5">{% bs_icon 'shield-lock-fill' %}</span>
+                                            <div>
+                                                <div class="fw-semibold small">{% trans "Permissões Avançadas" %}</div>
+                                                <div class="text-muted" style="font-size:0.75rem">
+                                                    {% trans "Gerencie grupos e permissões individuais." %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <a href="{% url 'user_permissions' object.pk %}" class="btn btn-sm btn-outline-info">
+                                            {% bs_icon 'arrow-right' %}
+                                        </a>
+                                    </div>
+                                    {% endif %}
+                                {% endif %}
+
                             </div>
                         </div>
                         {% endif %}
+
 
                         <div class="d-flex justify-content-end mt-4">
                             <a href="{% url 'user_list' %}" class="btn btn-secondary me-2">
