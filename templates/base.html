@@ -125,7 +125,7 @@
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
 
             <!-- Trocador de Idioma -->
-            <li class="nav-item dropdown me-2">
+            <li class="nav-item dropdown me-2" title="{% trans 'Alterar Idioma' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 {% bs_icon 'globe' %}
               </a>
@@ -149,21 +149,21 @@
             </li>
 
             <!-- Botão de Instalação PWA -->
-            <li class="nav-item me-3">
+            <li class="nav-item me-3" title="{% trans 'Instalar Aplicativo' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
               <button id="installButton" class="btn btn-link nav-link" style="display: none;">
                 {% bs_icon 'phone' %}
               </button>
             </li>
 
             <!-- Botão de Maximizar/Minimizar -->
-            <li class="nav-item me-3">
+            <li class="nav-item me-3" title="{% trans 'Maximizar/Minimizar' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
               <button class="btn btn-link nav-link" id="maximizeToggle">
                 {% bs_icon 'arrows-fullscreen' %}
               </button>
             </li>
 
             <!-- Alternador de Modo Escuro -->
-            <li class="nav-item me-3">
+            <li class="nav-item me-3" title="{% trans 'Alternar Modo Escuro' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
               <button class="btn btn-link nav-link" id="darkModeToggle">
                 <span id="icon-moon">{% bs_icon 'moon-fill' %}</span>
                 <span id="icon-sun">{% bs_icon 'sun-fill' %}</span>
@@ -171,7 +171,7 @@
             </li>
 
             <!-- Notificações -->
-            <li class="nav-item me-3">
+            <li class="nav-item me-3" title="{% trans 'Notificações' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
               <a class="nav-link" href="#">
                 {% bs_icon 'bell' %}
               </a>
@@ -213,19 +213,21 @@
 
                 <!-- Perfil do Usuário -->
                 <li>
-                  <a class="dropdown-item" href="{% url 'profile' %}">
+                  <a class="dropdown-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{% url 'profile' %}">
                     {% bs_icon 'person' extra_classes='mb-1' %}
                     {% trans "Perfil" %}
                   </a>
                 </li>
 
-                <!-- Configurações -->
+                <!-- Configurações (apenas staff/admin) -->
+                {% if user.is_staff or user.is_superuser %}
                 <li>
                   <a class="dropdown-item {% if request.resolver_match.url_name == 'settings' %}active{% endif %}" href="{% url 'settings' %}">
                     {% bs_icon 'gear' extra_classes='mb-1' %}
                     {% trans "Configurações" %}
                   </a>
                 </li>
+                {% endif %}
                 <li><hr class="dropdown-divider" /></li>
 
                 <!-- Último Login -->
@@ -259,51 +261,74 @@
       <nav id="sidebar" class="bg-body-tertiary border-end">
         <div class="p-3">
           <ul class="list-unstyled components">
+
+            <!-- Dashboard -->
             <li class="mb-2">
               <a href="{% url 'dashboard' %}"
                  class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %} px-3 py-2 rounded"> 
                  {% bs_icon 'grid' extra_classes='me-2' %} {% trans "Dashboard" %} 
               </a>
             </li>
-            <li class="mb-2">
-              <a href="#" class="nav-link px-3 py-2 rounded"> 
-                {% bs_icon 'truck' extra_classes='me-2' %} {% trans "Frotas" %} 
+
+            <!-- ════ Administração (dropdown colapsável) ════ -->
+            {% if user.is_staff or user.is_superuser or perms.accounts.view_customuser %}
+            <li class="mb-1">
+              <!-- Cabeçalho do grupo -->
+              <a class="nav-link px-3 py-2 rounded d-flex justify-content-between align-items-center {% if 'users' in request.path or 'groups' in request.path %}active{% else %}collapsed{% endif %}"
+                 data-bs-toggle="collapse"
+                 href="#submenuAdmin"
+                 role="button"
+                 aria-expanded="{% if 'users' in request.path or 'groups' in request.path %}true{% else %}false{% endif %}"
+                 aria-controls="submenuAdmin">
+                <span>{% bs_icon 'person-gear' extra_classes='me-2' %} {% trans "Administração" %}</span>
+                {% bs_icon 'chevron-left' extra_classes='submenu-chevron' %}
               </a>
+
+
+              <!-- Itens do submenu -->
+              <div class="collapse {% if 'users' in request.path or 'groups' in request.path %}show{% endif %}" id="submenuAdmin">
+                <ul class="list-unstyled ps-3 pt-1">
+
+                  <!-- Usuários -->
+                  {% if user.is_staff or user.is_superuser or perms.accounts.view_customuser %}
+                  <li class="mb-1">
+                    <a href="{% url 'user_list' %}"
+                       class="nav-link {% if 'users' in request.path %}active{% endif %} px-3 py-2 rounded d-flex align-items-center">
+                      {% bs_icon 'people' extra_classes='me-2' %} {% trans "Usuários" %}
+                    </a>
+                  </li>
+                  {% endif %}
+
+                  <!-- Grupos -->
+                  {% if user.is_staff or user.is_superuser %}
+                  <li class="mb-1">
+                    <a href="{% url 'group_list' %}"
+                       class="nav-link {% if 'groups' in request.path %}active{% endif %} px-3 py-2 rounded d-flex align-items-center">
+                      {% bs_icon 'shield-check' extra_classes='me-2' %} {% trans "Grupos" %}
+                    </a>
+                  </li>
+                  {% endif %}
+
+                </ul>
+              </div>
             </li>
-            <li class="mb-2">
-              <a href="#" class="nav-link px-3 py-2 rounded"> 
-                {% bs_icon 'box-seam' extra_classes='me-2' %} {% trans "Estoque" %} 
-              </a>
-            </li>
-            <li class="mb-2">
-              <a href="#" class="nav-link px-3 py-2 rounded"> 
-                {% bs_icon 'map' extra_classes='me-2' %} {% trans "Logística" %} 
-              </a>
-            </li>
-            <li class="mb-2">
-              <a href="{% url 'user_list' %}" class="nav-link {% if 'users' in request.path %}active{% endif %} px-3 py-2 rounded"> 
-                {% bs_icon 'people' extra_classes='me-2' %} {% trans "Usuários" %} 
-              </a>
-            </li>
-            <li class="mb-2">
-              <a href="{% url 'settings' %}" class="nav-link {% if request.resolver_match.url_name == 'settings' %}active{% endif %} px-3 py-2 rounded"> 
-                {% bs_icon 'gear' extra_classes='me-2' %} {% trans "Configurações" %} 
-              </a>
-            </li>
+            {% endif %}
+
+            <!-- Configurações -->
+            {% if user.is_staff or user.is_superuser %}
+              <li class="mb-2">
+                <a href="{% url 'settings' %}" class="nav-link {% if request.resolver_match.url_name == 'settings' %}active{% endif %} px-3 py-2 rounded"> 
+                  {% bs_icon 'gear' extra_classes='me-2' %} {% trans "Configurações" %} 
+                </a>
+              </li>
+            {% endif %}
+
           </ul>
         </div>
       </nav>
 
       <!-- Conteúdo da Página -->
       <main>
-        <!-- Informações de Debug -->
-        {% if user.is_superuser %}
-        <div class="alert alert-info">
-            URL Name: {{ request.resolver_match.url_name }}<br>
-            Path: {{ request.path }}
-        </div>
-        {% endif %}
-
         <!-- Mensagens -->
         <div id="alert-container">
           {% if messages %}
@@ -316,6 +341,9 @@
           {% endif %}
         </div>
 
+        <!-- Breadcrumb -->
+        {% block breadcrumb %}{% endblock %}
+        
         <!-- Conteúdo -->
         {% block content %}{% endblock %}
       </main>
@@ -410,6 +438,39 @@
         // Salva o estado atual no localStorage
         localStorage.setItem('sidebarActive', sidebar.classList.contains('active'));
       });
+
+      //────────────────────────────────────────────────────────────────────
+      // Animação da seta dos submenus colapsáveis
+      //────────────────────────────────────────────────────────────────────
+      document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(function (trigger) {
+        const targetId = trigger.getAttribute('href') || trigger.getAttribute('data-bs-target');
+        const target   = document.querySelector(targetId);
+        const chevron  = trigger.querySelector('.submenu-chevron');
+        if (!target || !chevron) return;
+
+        // ── Inicialização: corrige a seta no carregamento da página ──────
+        // Sem transition para não animar ao carregar, apenas define a posição
+        chevron.style.transition = 'none';
+        chevron.style.transform  = target.classList.contains('show')
+          ? 'rotate(-90deg)'   /* já expandido → seta para baixo */
+          : 'rotate(0deg)';    /* recolhido → seta para esquerda */
+
+        // Religa a transição após o próximo frame para animações de clique funcionarem
+        requestAnimationFrame(function () {
+          chevron.style.transition = '';
+        });
+
+        // ── Eventos de clique ────────────────────────────────────────────
+        target.addEventListener('show.bs.collapse', function () {
+          chevron.style.transform = 'rotate(-90deg)';  /* expandindo → seta para baixo */
+        });
+        target.addEventListener('hide.bs.collapse', function () {
+          chevron.style.transform = 'rotate(0deg)';    /* recolhendo → seta para esquerda */
+        });
+
+      });
+
+
 
       //────────────────────────────────────────────────────────────────────
       // Lógica do Modo Escuro

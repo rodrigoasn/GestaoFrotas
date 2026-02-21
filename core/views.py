@@ -4,6 +4,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
+from gestaoFrotas.mixins import AdminStaffRequiredMixin, StaffOrPermissionRequiredMixin
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from .models import SystemConfiguration
@@ -13,6 +14,13 @@ from django.views.decorators.cache import cache_control
 from django.views.generic import TemplateView
 from django.utils.decorators import method_decorator
 from .helpers import buscar_cnpj_receitaws, buscar_cep_viacep
+
+
+# ────────────────────────────────────────────────────────────────────
+# DASHBOARD VIEW
+# ────────────────────────────────────────────────────────────────────
+class DashboardView(LoginRequiredMixin, TemplateView):
+    template_name = 'dashboard.html'
 
 
 # ────────────────────────────────────────────────────────────────────
@@ -30,8 +38,9 @@ class ServiceWorkerView(TemplateView):
 # ────────────────────────────────────────────────────────────────────
 # VIEWS: CONFIGURAÇÕES
 # ────────────────────────────────────────────────────────────────────
-class SettingsView(LoginRequiredMixin, View):
+class SettingsView(LoginRequiredMixin, StaffOrPermissionRequiredMixin, View):
     template_name = 'core/settings.html'
+    permission_required = 'core.change_systemconfiguration'
 
     def get_object(self):
         # Garante que apenas uma instância exista
@@ -53,7 +62,6 @@ class SettingsView(LoginRequiredMixin, View):
         
         messages.error(request, _('Erro ao atualizar configurações.'))
         return render(request, self.template_name, {'form': form})
-
 
 
 # ────────────────────────────────────────────────────────────────────

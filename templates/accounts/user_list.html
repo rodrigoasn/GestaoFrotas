@@ -4,6 +4,9 @@
 
 {% block title %}{% trans "Gestão de Usuários" %}{% endblock %}
 
+{% block breadcrumb %}
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid mt-4">
     
@@ -13,9 +16,11 @@
         <h2>{% bs_icon 'people' size='1em' extra_classes='me-2' %} {% trans "Usuários" %}</h2>
         
         <!-- Botão de adicionar usuário -->
-        <a href="{% url 'user_add' %}" class="btn btn-primary">
-            {% bs_icon 'person-plus' extra_classes='me-1' %} {% trans "Novo Usuário" %}
-        </a>
+        {% if user.is_staff or user.is_superuser or perms.accounts.add_customuser %}
+            <a href="{% url 'user_add' %}" class="btn btn-primary">
+                {% bs_icon 'person-plus' extra_classes='me-1' %} {% trans "Novo Usuário" %}
+            </a>
+        {% endif %}
     </div>
 
     <!-- Filtro/Busca -->
@@ -28,7 +33,7 @@
                 <div class="col-auto">
                     <input type="text" id="search" name="q" class="form-control" value="{{ request.GET.q }}">
                 </div>
-                <div class="col-auto">
+                <div class="col-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Buscar' %}">
                     <button type="submit" class="btn btn-outline-secondary">{% bs_icon 'search' %}</button>
                 </div>
             </form>
@@ -82,15 +87,38 @@
                                     {% endif %}
                                 </td>
                                 <td class="text-end pe-4">
-                                    <a href="{% url 'user_change' user_obj.pk %}" class="btn btn-sm btn-outline-primary me-1" title="{% trans 'Editar' %}">
-                                        {% bs_icon 'pencil' %}
-                                    </a>
-                                    {% if user_obj != request.user %}
-                                        <a href="{% url 'user_delete' user_obj.pk %}" class="btn btn-sm btn-outline-danger" title="{% trans 'Excluir' %}">
-                                            {% bs_icon 'trash' %}
+
+                                    <!-- Editar:
+                                         - superuser/staff → pode editar qualquer conta
+                                         - usuário comum com change_customuser → só a própria conta
+                                         - sem permissão → desabilitado -->
+                                    {% if user.is_staff or user.is_superuser or perms.accounts.change_customuser and user_obj == request.user %}
+                                        <a href="{% url 'user_change' user_obj.pk %}" class="btn btn-sm btn-outline-primary me-1" title="{% trans 'Editar' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                                            {% bs_icon 'pencil' %}
                                         </a>
+                                    {% else %}
+                                        <button class="btn btn-sm btn-outline-secondary me-1" disabled title="{% trans 'Sem permissão para editar' %}" style="cursor: not-allowed; opacity: 0.45;" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                                            {% bs_icon 'pencil' %}
+                                        </button>
                                     {% endif %}
+
+                                    <!-- Excluir:
+                                         - superuser/staff → pode excluir (exceto a si mesmo)
+                                         - usuário comum → não pode excluir outros, botão desabilitado -->
+                                    {% if user_obj != request.user %}
+                                        {% if user.is_staff or user.is_superuser %}
+                                            <a href="{% url 'user_delete' user_obj.pk %}" class="btn btn-sm btn-outline-danger" title="{% trans 'Excluir' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                                                {% bs_icon 'trash' %}
+                                            </a>
+                                        {% else %}
+                                            <button class="btn btn-sm btn-outline-secondary" disabled title="{% trans 'Sem permissão para excluir' %}" style="cursor: not-allowed; opacity: 0.45;" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                                                {% bs_icon 'trash' %}
+                                            </button>
+                                        {% endif %}
+                                    {% endif %}
+
                                 </td>
+
                             </tr>
                         {% empty %}
                             <tr>
